@@ -1,10 +1,10 @@
-title: Hyde
+title: Jins
 description: >-
-  Build your own portfolio <br>
-  with Hyde.
+  Welcome to my data science records page! <br>
+  Have a nice day with me.
 url: "https://whatareyoudoingz.github.io"
-github: ChemistryX
-email: changeme@chemistryx.me
+github: whatareyoudoingz
+email: ##
 google_analytics: <YOUR UA TOKEN>
 
 exclude: [README.md, Gemfile, Gemfile.lock]
