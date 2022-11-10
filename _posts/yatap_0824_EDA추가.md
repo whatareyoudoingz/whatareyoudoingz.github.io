@@ -1,0 +1,6256 @@
+## Import
+
+
+```python
+!sudo apt-get install -y fonts-nanum
+!sudo fc-cache -fv]
+!rm ~/.cache/matplotlib -rf
+```
+
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following package was automatically installed and is no longer required:
+      libnvidia-common-460
+    Use 'sudo apt autoremove' to remove it.
+    The following NEW packages will be installed:
+      fonts-nanum
+    0 upgraded, 1 newly installed, 0 to remove and 5 not upgraded.
+    Need to get 9,604 kB of archives.
+    After this operation, 29.5 MB of additional disk space will be used.
+    Get:1 http://archive.ubuntu.com/ubuntu bionic/universe amd64 fonts-nanum all 20170925-1 [9,604 kB]
+    Fetched 9,604 kB in 2s (3,978 kB/s)
+    debconf: unable to initialize frontend: Dialog
+    debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 76, <> line 1.)
+    debconf: falling back to frontend: Readline
+    debconf: unable to initialize frontend: Readline
+    debconf: (This frontend requires a controlling tty.)
+    debconf: falling back to frontend: Teletype
+    dpkg-preconfigure: unable to re-open stdin: 
+    Selecting previously unselected package fonts-nanum.
+    (Reading database ... 123941 files and directories currently installed.)
+    Preparing to unpack .../fonts-nanum_20170925-1_all.deb ...
+    Unpacking fonts-nanum (20170925-1) ...
+    Setting up fonts-nanum (20170925-1) ...
+    Processing triggers for fontconfig (2.12.6-0ubuntu2) ...
+    fc-cache: invalid option -- ']'
+    usage: fc-cache [-EfrsvVh] [-y SYSROOT] [--error-on-no-fonts] [--force|--really-force] [--sysroot=SYSROOT] [--system-only] [--verbose] [--version] [--help] [dirs]
+    Build font information caches in [dirs]
+    (all directories in font configuration by default).
+    
+      -E, --error-on-no-fonts  raise an error if no fonts in a directory
+      -f, --force              scan directories with apparently valid caches
+      -r, --really-force       erase all existing caches, then rescan
+      -s, --system-only        scan system-wide directories only
+      -y, --sysroot=SYSROOT    prepend SYSROOT to all paths for scanning
+      -v, --verbose            display status information while busy
+      -V, --version            display font config version and exit
+      -h, --help               display this help and exit
+
+
+
+```python
+import matplotlib.pyplot as plt
+plt.rc('font', family='NanumBarunGothic')
+```
+
+
+```python
+import pandas as pd
+import random
+import os
+import numpy as np
+
+from sklearn.linear_model import LinearRegression
+from sklearn.multioutput import MultiOutputRegressor
+```
+
+
+```python
+def seed_everything(seed):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+seed_everything(42) # Seed 고정
+```
+
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+    Mounted at /content/drive
+
+
+
+```python
+jungboytx=pd.read_csv('/content/drive/MyDrive/open/meta/x_feature_info.csv')
+jungboytx
+```
+
+
+
+
+
+  <div id="df-4d600925-1224-44cc-868a-87d93bf4739a">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Feature</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>X_01</td>
+      <td>PCB 체결 시 단계별 누름량(Step 1)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>X_02</td>
+      <td>PCB 체결 시 단계별 누름량(Step 2)</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>X_03</td>
+      <td>방열 재료 1 무게</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>X_04</td>
+      <td>1차 검사 통과 여부</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>X_05</td>
+      <td>PCB 체결 시 단계별 누름량(Step 3)</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>X_06</td>
+      <td>PCB 체결 시 단계별 누름량(Step 4)</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>X_07</td>
+      <td>방열 재료 1 면적</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>X_08</td>
+      <td>방열 재료 2 면적</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>X_09</td>
+      <td>방열 재료 3 면적</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>X_10</td>
+      <td>방열 재료 2 무게</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>X_11</td>
+      <td>방열 재료 3 무게</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>X_12</td>
+      <td>커넥터 위치 기준 좌표</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>X_13</td>
+      <td>각 안테나 패드 위치(높이) 차이</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>X_14</td>
+      <td>1번 안테나 패드 위치</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>X_15</td>
+      <td>2번 안테나 패드 위치</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>X_16</td>
+      <td>3번 안테나 패드 위치</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>X_17</td>
+      <td>4번 안테나 패드 위치</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>X_18</td>
+      <td>5번 안테나 패드 위치</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>X_19</td>
+      <td>1번 스크류 삽입 깊이</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>X_20</td>
+      <td>2번 스크류 삽입 깊이</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>X_21</td>
+      <td>3번 스크류 삽입 깊이</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>X_22</td>
+      <td>4번 스크류 삽입 깊이</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>X_23</td>
+      <td>2차 검사 통과 여부</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>X_24</td>
+      <td>커넥터 1번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>X_25</td>
+      <td>커넥터 2번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>X_26</td>
+      <td>커넥터 3번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>X_27</td>
+      <td>커넥터 4번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>X_28</td>
+      <td>커넥터 5번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>X_29</td>
+      <td>커넥터 6번 핀 치수</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>X_30</td>
+      <td>스크류 삽입 깊이1</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>X_31</td>
+      <td>스크류 삽입 깊이2</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>X_32</td>
+      <td>스크류 삽입 깊이3</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>X_33</td>
+      <td>스크류 삽입 깊이4</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>X_34</td>
+      <td>스크류 체결 시 분당 회전수 1</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>X_35</td>
+      <td>스크류 체결 시 분당 회전수 2</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>X_36</td>
+      <td>스크류 체결 시 분당 회전수 3</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>X_37</td>
+      <td>스크류 체결 시 분당 회전수 4</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>X_38</td>
+      <td>하우징 PCB 안착부 1 치수</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>X_39</td>
+      <td>하우징 PCB 안착부 2 치수</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>X_40</td>
+      <td>하우징 PCB 안착부 3 치수</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>X_41</td>
+      <td>레이돔 치수 (안테나 1번 부위)</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>X_42</td>
+      <td>레이돔 치수 (안테나 2번 부위)</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>X_43</td>
+      <td>레이돔 치수 (안테나 3번 부위)</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>X_44</td>
+      <td>레이돔 치수 (안테나 4번 부위)</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>X_45</td>
+      <td>안테나 부분 레이돔 기울기</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>X_46</td>
+      <td>실란트 본드 소요량</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>X_47</td>
+      <td>3차 검사 통과 여부</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>X_48</td>
+      <td>4차 검사 통과 여부</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>X_49</td>
+      <td>Cal 투입 전 대기 시간</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>X_50</td>
+      <td>RF1 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>X_51</td>
+      <td>RF2 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>X_52</td>
+      <td>RF3 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>X_53</td>
+      <td>RF4 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>X_54</td>
+      <td>RF5 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>X_55</td>
+      <td>RF6 부분 SMT 납 량</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>X_56</td>
+      <td>RF7 부분 SMT 납 량</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-4d600925-1224-44cc-868a-87d93bf4739a')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-4d600925-1224-44cc-868a-87d93bf4739a button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-4d600925-1224-44cc-868a-87d93bf4739a');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+jungboytx=pd.read_csv('/content/drive/MyDrive/open/meta/y_feature_info.csv')
+jungboytx
+```
+
+
+
+
+
+  <div id="df-3f114804-f72b-4391-8b0a-c74b654bf469">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Feature</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Y_01</td>
+      <td>안테나 Gain 평균 (각도1)</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Y_02</td>
+      <td>안테나 1 Gain 편차</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Y_03</td>
+      <td>안테나 2 Gain 편차</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Y_04</td>
+      <td>평균 신호대 잡음비</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Y_05</td>
+      <td>안테나 Gain 평균 (각도2)</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Y_06</td>
+      <td>신호대 잡음비  (각도1)</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Y_07</td>
+      <td>안테나 Gain 평균 (각도3)</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Y_08</td>
+      <td>신호대 잡음비  (각도2)</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Y_09</td>
+      <td>신호대 잡음비  (각도3)</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Y_10</td>
+      <td>신호대 잡음비  (각도4)</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Y_11</td>
+      <td>안테나 Gain 평균 (각도4)</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Y_12</td>
+      <td>신호대 잡음비  (각도5)</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Y_13</td>
+      <td>신호대 잡음비  (각도6)</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Y_14</td>
+      <td>신호대 잡음비  (각도7)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-3f114804-f72b-4391-8b0a-c74b654bf469')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-3f114804-f72b-4391-8b0a-c74b654bf469 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-3f114804-f72b-4391-8b0a-c74b654bf469');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+jungboyt=pd.read_csv('/content/drive/MyDrive/open/meta/y_feature_spec_info.csv')
+jungboyt
+```
+
+
+
+
+
+  <div id="df-2e647ad6-3ec7-4604-b9a8-eb1e5484850a">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Feature</th>
+      <th>최소</th>
+      <th>최대</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Y_01</td>
+      <td>0.2</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Y_02</td>
+      <td>0.2</td>
+      <td>2.1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Y_03</td>
+      <td>0.2</td>
+      <td>2.1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Y_04</td>
+      <td>7.0</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Y_05</td>
+      <td>22.0</td>
+      <td>36.5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Y_06</td>
+      <td>-19.2</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Y_07</td>
+      <td>2.4</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Y_08</td>
+      <td>-29.2</td>
+      <td>-24.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Y_09</td>
+      <td>-29.2</td>
+      <td>-24.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Y_10</td>
+      <td>-30.6</td>
+      <td>-20.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Y_11</td>
+      <td>19.6</td>
+      <td>26.6</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Y_12</td>
+      <td>-29.2</td>
+      <td>-24.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Y_13</td>
+      <td>-29.2</td>
+      <td>-24.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Y_14</td>
+      <td>-29.2</td>
+      <td>-24.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-2e647ad6-3ec7-4604-b9a8-eb1e5484850a')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-2e647ad6-3ec7-4604-b9a8-eb1e5484850a button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-2e647ad6-3ec7-4604-b9a8-eb1e5484850a');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+## Data Load
+
+
+```python
+train_df = pd.read_csv('/content/drive/MyDrive/open/train.csv')
+```
+
+
+```python
+train_df.head()
+```
+
+
+
+
+
+  <div id="df-2ea5457d-d0df-4630-8911-244874a009a5">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>X_01</th>
+      <th>X_02</th>
+      <th>X_03</th>
+      <th>X_04</th>
+      <th>X_05</th>
+      <th>X_06</th>
+      <th>X_07</th>
+      <th>X_08</th>
+      <th>X_09</th>
+      <th>...</th>
+      <th>Y_05</th>
+      <th>Y_06</th>
+      <th>Y_07</th>
+      <th>Y_08</th>
+      <th>Y_09</th>
+      <th>Y_10</th>
+      <th>Y_11</th>
+      <th>Y_12</th>
+      <th>Y_13</th>
+      <th>Y_14</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>TRAIN_00001</td>
+      <td>70.544</td>
+      <td>103.320</td>
+      <td>67.47</td>
+      <td>1</td>
+      <td>101.892</td>
+      <td>74.983</td>
+      <td>29.45</td>
+      <td>62.38</td>
+      <td>245.71</td>
+      <td>...</td>
+      <td>29.632</td>
+      <td>16.083</td>
+      <td>4.276</td>
+      <td>-25.381</td>
+      <td>-25.529</td>
+      <td>-22.769</td>
+      <td>23.792</td>
+      <td>-25.470</td>
+      <td>-25.409</td>
+      <td>-25.304</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>TRAIN_00002</td>
+      <td>69.524</td>
+      <td>103.321</td>
+      <td>65.17</td>
+      <td>1</td>
+      <td>101.944</td>
+      <td>72.943</td>
+      <td>28.73</td>
+      <td>61.23</td>
+      <td>233.61</td>
+      <td>...</td>
+      <td>33.179</td>
+      <td>16.736</td>
+      <td>3.229</td>
+      <td>-26.619</td>
+      <td>-26.523</td>
+      <td>-22.574</td>
+      <td>24.691</td>
+      <td>-26.253</td>
+      <td>-26.497</td>
+      <td>-26.438</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>TRAIN_00003</td>
+      <td>72.583</td>
+      <td>103.320</td>
+      <td>64.07</td>
+      <td>1</td>
+      <td>103.153</td>
+      <td>72.943</td>
+      <td>28.81</td>
+      <td>105.77</td>
+      <td>272.20</td>
+      <td>...</td>
+      <td>31.801</td>
+      <td>17.080</td>
+      <td>2.839</td>
+      <td>-26.238</td>
+      <td>-26.216</td>
+      <td>-22.169</td>
+      <td>24.649</td>
+      <td>-26.285</td>
+      <td>-26.215</td>
+      <td>-26.370</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TRAIN_00004</td>
+      <td>71.563</td>
+      <td>103.320</td>
+      <td>67.57</td>
+      <td>1</td>
+      <td>101.971</td>
+      <td>77.022</td>
+      <td>28.92</td>
+      <td>115.21</td>
+      <td>255.36</td>
+      <td>...</td>
+      <td>34.503</td>
+      <td>17.143</td>
+      <td>3.144</td>
+      <td>-25.426</td>
+      <td>-25.079</td>
+      <td>-21.765</td>
+      <td>24.913</td>
+      <td>-25.254</td>
+      <td>-25.021</td>
+      <td>-25.345</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>TRAIN_00005</td>
+      <td>69.524</td>
+      <td>103.320</td>
+      <td>63.57</td>
+      <td>1</td>
+      <td>101.981</td>
+      <td>70.904</td>
+      <td>29.68</td>
+      <td>103.38</td>
+      <td>241.46</td>
+      <td>...</td>
+      <td>32.602</td>
+      <td>17.569</td>
+      <td>3.138</td>
+      <td>-25.376</td>
+      <td>-25.242</td>
+      <td>-21.072</td>
+      <td>25.299</td>
+      <td>-25.072</td>
+      <td>-25.195</td>
+      <td>-24.974</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 71 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-2ea5457d-d0df-4630-8911-244874a009a5')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-2ea5457d-d0df-4630-8911-244874a009a5 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-2ea5457d-d0df-4630-8911-244874a009a5');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+train_x = train_df.filter(regex='X') # Input : X Featrue
+train_y = train_df.filter(regex='Y') # Output : Y Feature
+```
+
+
+```python
+train_x.head()
+```
+
+
+
+
+
+  <div id="df-fe727640-6d17-4f13-a41a-b0bc09b3f341">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X_01</th>
+      <th>X_02</th>
+      <th>X_03</th>
+      <th>X_04</th>
+      <th>X_05</th>
+      <th>X_06</th>
+      <th>X_07</th>
+      <th>X_08</th>
+      <th>X_09</th>
+      <th>X_10</th>
+      <th>...</th>
+      <th>X_47</th>
+      <th>X_48</th>
+      <th>X_49</th>
+      <th>X_50</th>
+      <th>X_51</th>
+      <th>X_52</th>
+      <th>X_53</th>
+      <th>X_54</th>
+      <th>X_55</th>
+      <th>X_56</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>70.544</td>
+      <td>103.320</td>
+      <td>67.47</td>
+      <td>1</td>
+      <td>101.892</td>
+      <td>74.983</td>
+      <td>29.45</td>
+      <td>62.38</td>
+      <td>245.71</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>9706.03</td>
+      <td>137.043591</td>
+      <td>135.359219</td>
+      <td>147.837968</td>
+      <td>134.313475</td>
+      <td>125.605427</td>
+      <td>136.721425</td>
+      <td>125.028256</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>69.524</td>
+      <td>103.321</td>
+      <td>65.17</td>
+      <td>1</td>
+      <td>101.944</td>
+      <td>72.943</td>
+      <td>28.73</td>
+      <td>61.23</td>
+      <td>233.61</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>10423.43</td>
+      <td>133.736691</td>
+      <td>135.979817</td>
+      <td>149.924692</td>
+      <td>123.630583</td>
+      <td>127.893337</td>
+      <td>143.322659</td>
+      <td>124.877308</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>72.583</td>
+      <td>103.320</td>
+      <td>64.07</td>
+      <td>1</td>
+      <td>103.153</td>
+      <td>72.943</td>
+      <td>28.81</td>
+      <td>105.77</td>
+      <td>272.20</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>10948.53</td>
+      <td>132.805112</td>
+      <td>131.055355</td>
+      <td>146.814592</td>
+      <td>128.939070</td>
+      <td>127.012195</td>
+      <td>140.395688</td>
+      <td>122.238232</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>71.563</td>
+      <td>103.320</td>
+      <td>67.57</td>
+      <td>1</td>
+      <td>101.971</td>
+      <td>77.022</td>
+      <td>28.92</td>
+      <td>115.21</td>
+      <td>255.36</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>15007.03</td>
+      <td>134.138760</td>
+      <td>133.239422</td>
+      <td>139.720132</td>
+      <td>132.260824</td>
+      <td>130.723186</td>
+      <td>147.624829</td>
+      <td>134.875225</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>69.524</td>
+      <td>103.320</td>
+      <td>63.57</td>
+      <td>1</td>
+      <td>101.981</td>
+      <td>70.904</td>
+      <td>29.68</td>
+      <td>103.38</td>
+      <td>241.46</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>11051.03</td>
+      <td>142.728970</td>
+      <td>136.620022</td>
+      <td>134.853555</td>
+      <td>134.760252</td>
+      <td>125.647793</td>
+      <td>139.331105</td>
+      <td>123.272762</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 56 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-fe727640-6d17-4f13-a41a-b0bc09b3f341')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-fe727640-6d17-4f13-a41a-b0bc09b3f341 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-fe727640-6d17-4f13-a41a-b0bc09b3f341');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+train_y.head()
+```
+
+
+
+
+
+  <div id="df-450adf39-5ac8-4f20-8720-4b53802dd344">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Y_01</th>
+      <th>Y_02</th>
+      <th>Y_03</th>
+      <th>Y_04</th>
+      <th>Y_05</th>
+      <th>Y_06</th>
+      <th>Y_07</th>
+      <th>Y_08</th>
+      <th>Y_09</th>
+      <th>Y_10</th>
+      <th>Y_11</th>
+      <th>Y_12</th>
+      <th>Y_13</th>
+      <th>Y_14</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2.056</td>
+      <td>1.456</td>
+      <td>1.680</td>
+      <td>10.502</td>
+      <td>29.632</td>
+      <td>16.083</td>
+      <td>4.276</td>
+      <td>-25.381</td>
+      <td>-25.529</td>
+      <td>-22.769</td>
+      <td>23.792</td>
+      <td>-25.470</td>
+      <td>-25.409</td>
+      <td>-25.304</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.446</td>
+      <td>1.184</td>
+      <td>1.268</td>
+      <td>18.507</td>
+      <td>33.179</td>
+      <td>16.736</td>
+      <td>3.229</td>
+      <td>-26.619</td>
+      <td>-26.523</td>
+      <td>-22.574</td>
+      <td>24.691</td>
+      <td>-26.253</td>
+      <td>-26.497</td>
+      <td>-26.438</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.251</td>
+      <td>0.665</td>
+      <td>0.782</td>
+      <td>14.082</td>
+      <td>31.801</td>
+      <td>17.080</td>
+      <td>2.839</td>
+      <td>-26.238</td>
+      <td>-26.216</td>
+      <td>-22.169</td>
+      <td>24.649</td>
+      <td>-26.285</td>
+      <td>-26.215</td>
+      <td>-26.370</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.464</td>
+      <td>1.079</td>
+      <td>1.052</td>
+      <td>16.975</td>
+      <td>34.503</td>
+      <td>17.143</td>
+      <td>3.144</td>
+      <td>-25.426</td>
+      <td>-25.079</td>
+      <td>-21.765</td>
+      <td>24.913</td>
+      <td>-25.254</td>
+      <td>-25.021</td>
+      <td>-25.345</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.983</td>
+      <td>0.646</td>
+      <td>0.689</td>
+      <td>15.047</td>
+      <td>32.602</td>
+      <td>17.569</td>
+      <td>3.138</td>
+      <td>-25.376</td>
+      <td>-25.242</td>
+      <td>-21.072</td>
+      <td>25.299</td>
+      <td>-25.072</td>
+      <td>-25.195</td>
+      <td>-24.974</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-450adf39-5ac8-4f20-8720-4b53802dd344')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-450adf39-5ac8-4f20-8720-4b53802dd344 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-450adf39-5ac8-4f20-8720-4b53802dd344');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+# 데이터 파악
+
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.rc('font', family='NanumBarunGothic')
+plt.rcParams['font.size']= 15
+```
+
+# 도메인 분석
+
+- 중요한 예상 변수 : '방열 재료 면적', '안테나 패드 위치' , '스크류 삽입 깊이', '커넥터 핀 치수' , '레이돔 치수' , 'cal 투입 전 대기 시간','안테나 gain 평균' 
+
+## 결측치 파악
+
+
+```python
+for i in ['X_04','X_23','X_47','X_48']:
+  print(i," : ",len(train_x[train_x[i]==0]))
+  print(train_x[i].unique())
+```
+
+    X_04  :  0
+    [1]
+    X_23  :  0
+    [1]
+    X_47  :  0
+    [1]
+    X_48  :  0
+    [1]
+
+
+- 인사이트 1
+  - 검사 통과 여부는 모두 1로 유의미한 변수가 아니다.
+
+
+```python
+for i in train_x.columns:
+  if len(train_x[train_x[i]==0]) !=0:
+    print(i ," : ", len(train_x[train_x[i]==0]) ,'/', len(train_x[train_x[i]!=0]))
+```
+
+    X_10  :  39575 / 32
+    X_11  :  39580 / 27
+    X_45  :  1 / 39606
+
+
+- 인사이트 2
+  - 결측치가 있는 컬럼 : X_10, X_11
+  - X_45는 기울기이므로 결측치라고 보기 어려움.
+
+# EDA
+
+
+```python
+plt.figure(figsize=(22,14))
+train_corr = train_df.corr() # pearson 상관관계 계수
+train_corr_2 = train_corr.apply(lambda x : round(x,1)) # 반올림
+sns.heatmap(train_corr_2, cmap='RdBu_r', vmax=1, vmin=-1, annot=True, fmt='.1f')
+```
+
+    WARNING:matplotlib.font_manager:findfont: Font family ['NanumBarunGothic'] not found. Falling back to DejaVu Sans.
+
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x7feac244f7d0>
+
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_25_2.png)
+
+
+
+```python
+plt.figure(figsize=(22,14))
+sns.heatmap(train_corr_2.loc['X_01':'X_56','Y_01':'Y_14'], cmap='RdBu_r', vmax=1, vmin=-1, annot=True, fmt='.1f')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x7feabf205750>
+
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_26_1.png)
+
+
+- 인사이트 3
+  - x변수 중 직접적으로 y변수에 영향을 주는 변수는 없었다. => x변수를 여러개 합쳐야 y변수에 영향을 미친다.
+
+
+```python
+plt.figure(figsize=(22,14))
+sns.heatmap(train_corr_2.loc['Y_01':'Y_14','Y_01':'Y_14'], cmap='RdBu_r', vmax=1, vmin=-1, annot=True, fmt='.1f')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x7feabc908d90>
+
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_28_1.png)
+
+
+
+```python
+plt.figure(figsize=(30,20))
+sns.heatmap(train_corr_2.loc['X_01':'X_56','X_01':'X_56'], cmap='RdBu_r', vmax=1, vmin=-1, annot=True, fmt='.1f')
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x7feabaa5c210>
+
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_29_1.png)
+
+
+## Target: Y 변수
+
+### 안테나 Gain 평균
+
+
+```python
+train_y[['Y_01','Y_05','Y_07','Y_11','Y_12']]
+```
+
+
+
+
+
+  <div id="df-63630266-7cb5-41a1-b7ab-ae30bcf8876c">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Y_01</th>
+      <th>Y_05</th>
+      <th>Y_07</th>
+      <th>Y_11</th>
+      <th>Y_12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2.056</td>
+      <td>29.632</td>
+      <td>4.276</td>
+      <td>23.792</td>
+      <td>-25.470</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.446</td>
+      <td>33.179</td>
+      <td>3.229</td>
+      <td>24.691</td>
+      <td>-26.253</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.251</td>
+      <td>31.801</td>
+      <td>2.839</td>
+      <td>24.649</td>
+      <td>-26.285</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.464</td>
+      <td>34.503</td>
+      <td>3.144</td>
+      <td>24.913</td>
+      <td>-25.254</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.983</td>
+      <td>32.602</td>
+      <td>3.138</td>
+      <td>25.299</td>
+      <td>-25.072</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>39602</th>
+      <td>1.382</td>
+      <td>29.194</td>
+      <td>3.410</td>
+      <td>24.261</td>
+      <td>-26.491</td>
+    </tr>
+    <tr>
+      <th>39603</th>
+      <td>1.482</td>
+      <td>29.859</td>
+      <td>3.406</td>
+      <td>23.427</td>
+      <td>-27.250</td>
+    </tr>
+    <tr>
+      <th>39604</th>
+      <td>1.117</td>
+      <td>24.720</td>
+      <td>3.215</td>
+      <td>24.301</td>
+      <td>-26.388</td>
+    </tr>
+    <tr>
+      <th>39605</th>
+      <td>0.895</td>
+      <td>26.412</td>
+      <td>4.216</td>
+      <td>23.305</td>
+      <td>-26.536</td>
+    </tr>
+    <tr>
+      <th>39606</th>
+      <td>1.147</td>
+      <td>30.745</td>
+      <td>3.307</td>
+      <td>24.450</td>
+      <td>-26.224</td>
+    </tr>
+  </tbody>
+</table>
+<p>39607 rows × 5 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-63630266-7cb5-41a1-b7ab-ae30bcf8876c')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-63630266-7cb5-41a1-b7ab-ae30bcf8876c button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-63630266-7cb5-41a1-b7ab-ae30bcf8876c');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+for i in ['Y_01','Y_05','Y_07','Y_11']:
+  plt.figure(figsize=(30,10),dpi=150)
+
+  x = train_y[i].index
+  y = train_y[i].values
+
+  plt.title("안테나 Gain 평균")
+  plt.xlabel(i)
+  plt.ylabel("값")
+  plt.plot(x, y)
+  plt.hlines(y=jungboyt['최소'][jungboyt['Feature']==i], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+  plt.hlines(y=jungboyt['최대'][jungboyt['Feature']==i], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+  plt.show()
+```
+
+    WARNING:matplotlib.font_manager:findfont: Font family ['NanumBarunGothic'] not found. Falling back to DejaVu Sans.
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_33_1.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_33_3.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_33_5.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_33_7.png)
+
+
+
+```python
+plt.figure(figsize=(30,10),dpi=150)
+
+x = train_y[['Y_05','Y_11']].index
+y = train_y[['Y_05','Y_11']].values
+
+plt.title("안테나 Gain 평균")
+plt.xlabel('Y_05 & Y_11')
+plt.ylabel("값")
+plt.plot(x, y)
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_05'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_05'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_11'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_11'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+
+plt.legend(['Y_05','Y_11'])
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_34_1.png)
+
+
+
+```python
+plt.figure(figsize=(30,10),dpi=150)
+
+x = train_y[['Y_01','Y_07']].index
+y = train_y[['Y_01','Y_07']].values
+
+plt.title("안테나 Gain 평균")
+plt.xlabel('Y_01 & Y_07')
+plt.ylabel("값")
+plt.plot(x, y)
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_01'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_01'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_07'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_07'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+
+plt.legend(['Y_01','Y_07'])
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_35_1.png)
+
+
+- '안테나 Gain 평균' 결과 변수 -> 각도1, 각도 3 (Y_01, Y_07)에서 정상 벗어난 샘플 다수 존재 
+-> 도메인 지식을 통해, '**안테나 Gain 평균**'에 영향을 미치는 변수는 [**Cal 투입 전 대기시간/방열재료 무게/방열재료 면적/안테나 패드 위치/스크류 삽입 깊이/커넥터 핀 치수/레이돔 치수**] 이 6가지가 중요하다는 것을 알게 됨
+- Y_01는 Y_07와 0-5 사이로 값의 분포가 연속적이고,  Y_05는 Y_11와 20-40 사이로 값의 분포가 연속적이다.
+- 특히 영향을 미치는 X 변수들을 regression을 이용하여 두 변수 (Y_01,Y_07)를 효과적으로 구할 수 있는가?
+
+### 신호 대 잡음비
+
+
+```python
+for i in ['Y_06','Y_08','Y_09','Y_10','Y_12','Y_13','Y_14']:
+  plt.figure(figsize=(30,10),dpi=150)
+
+  x = train_y[i].index
+  y = train_y[i].values
+
+  plt.title("신호 대 잡음비")
+  plt.xlabel(i)
+  plt.ylabel("값(신호/노이즈)")
+  plt.plot(x, y)
+  plt.hlines(y=jungboyt['최소'][jungboyt['Feature']==i], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+  plt.hlines(y=jungboyt['최대'][jungboyt['Feature']==i], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45432 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51592 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45432 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51592 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_38_7.png)
+
+
+
+```python
+plt.figure(figsize=(30,10),dpi=150)
+
+x = train_y[['Y_06','Y_09']].index
+y = train_y[['Y_06','Y_09']].values
+
+plt.title("안테나 Gain 평균")
+plt.xlabel('Y_06 & Y_09')
+plt.ylabel("값")
+plt.plot(x, y)
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_06'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_06'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_09'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_09'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+
+plt.legend(['Y_06','Y_09'])
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_39_1.png)
+
+
+
+```python
+plt.figure(figsize=(30,10),dpi=150)
+
+x = train_y[['Y_08','Y_10']].index
+y = train_y[['Y_08','Y_10']].values
+
+plt.title("안테나 Gain 평균")
+plt.xlabel('Y_08 & Y_10')
+plt.ylabel("값")
+plt.plot(x, y)
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_08'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_08'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최소'][jungboyt['Feature']=='Y_10'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+plt.hlines(y=jungboyt['최대'][jungboyt['Feature']=='Y_10'], xmin=-1000, xmax=len(x)+1000, color='red', linestyle='dotted')
+
+plt.legend(['Y_08','Y_10'])
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_40_1.png)
+
+
+- '신호 대 잡음비' 결과 변수 -> 각도 1, 각도 4 (Y_06, Y_10)에서 정상을 벗어난 샘플들이 다수 발견됨
+- Y_08는 Y10와 [-30,20] 사이로 값의 분포가 연속적하다.
+-> 마찬가지로, 영향을 준 X feature을 regression 이용하여 이 두 변수를 효과적으로 찾을 수 있을까?
+
+## Feature: X 변수
+
+- 가설 
+  - **['방열 재료 면적', '안테나 패드 위치' , '스크류 삽입 깊이', '커넥터 핀 치수' , '레이돔 치수' , 'cal 투입 전 대기 시간']** 가 **'안테나 gain 평균'** 구하는 중요 변수이다.
+
+### Calibration 투입 전 대기 시간
+
+
+```python
+for i in ['Y_01','Y_05','Y_07','Y_11']:
+  plt.figure(figsize=(10,5),dpi=100)
+
+  y = train_df['X_49']
+  x = train_df[i]
+
+  plt.title(i)
+  plt.ylabel('Cal 투입 전 대기 시간')
+  plt.xlabel("안테나 Gain 평균")
+  plt.scatter(x, y)
+  #plt.hlines(y=0.8, xmin=0, xmax=max(x), color='red', linestyle='dotted')
+  #plt.hlines(y=2.2, xmin=0, xmax=max(x), color='red', linestyle='dotted')
+  plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53804 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51204 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44592 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53804 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51204 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44592 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_45_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_45_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_45_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_45_4.png)
+
+
+
+```python
+for i in ['Y_01','Y_05','Y_07','Y_11']:
+  plt.figure(figsize=(30,10),dpi=150)
+
+  x = train_df['X_49']
+  y = train_df[i]
+
+  plt.title(i)
+  plt.xlabel('Cal 투입 전 대기 시간')
+  plt.ylabel("안테나 Gain 평균")
+  plt.scatter(x, y)
+  #plt.hlines(y=0.8, xmin=0, xmax=max(x), color='red', linestyle='dotted')
+  #plt.hlines(y=2.2, xmin=0, xmax=max(x), color='red', linestyle='dotted')
+  plt.show()
+```
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_46_0.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_46_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_46_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_46_3.png)
+
+
+- 인사이트 4
+  - 대기시간이 길다면 안테나 Gain 평균이 최고점을 찍지는 못한다.
+  - 대기시간이 유의한 변수가 될 수도 있다.
+
+
+```python
+
+```
+
+### PCB 체결시 단계별 누름량
+
+
+```python
+train_x[['X_01','X_02','X_05','X_06']]
+```
+
+
+
+
+
+  <div id="df-fc8778b9-846f-47aa-b276-7740c1585f94">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X_01</th>
+      <th>X_02</th>
+      <th>X_05</th>
+      <th>X_06</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>70.544</td>
+      <td>103.320</td>
+      <td>101.892</td>
+      <td>74.983</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>69.524</td>
+      <td>103.321</td>
+      <td>101.944</td>
+      <td>72.943</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>72.583</td>
+      <td>103.320</td>
+      <td>103.153</td>
+      <td>72.943</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>71.563</td>
+      <td>103.320</td>
+      <td>101.971</td>
+      <td>77.022</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>69.524</td>
+      <td>103.320</td>
+      <td>101.981</td>
+      <td>70.904</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>39602</th>
+      <td>66.465</td>
+      <td>103.320</td>
+      <td>103.150</td>
+      <td>66.825</td>
+    </tr>
+    <tr>
+      <th>39603</th>
+      <td>66.465</td>
+      <td>103.321</td>
+      <td>102.021</td>
+      <td>66.825</td>
+    </tr>
+    <tr>
+      <th>39604</th>
+      <td>68.504</td>
+      <td>103.320</td>
+      <td>103.144</td>
+      <td>68.864</td>
+    </tr>
+    <tr>
+      <th>39605</th>
+      <td>66.465</td>
+      <td>103.320</td>
+      <td>102.025</td>
+      <td>67.845</td>
+    </tr>
+    <tr>
+      <th>39606</th>
+      <td>66.465</td>
+      <td>103.320</td>
+      <td>102.004</td>
+      <td>69.884</td>
+    </tr>
+  </tbody>
+</table>
+<p>39607 rows × 4 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-fc8778b9-846f-47aa-b276-7740c1585f94')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-fc8778b9-846f-47aa-b276-7740c1585f94 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-fc8778b9-846f-47aa-b276-7740c1585f94');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+for i in ['X_01','X_02','X_05','X_06']:
+  plt.figure(figsize=(20,10))
+  sns.barplot(data=train_x.groupby([i])['X_08'].count().reset_index().rename(columns={"X_08":"수"}),x=i,y="수")
+  plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_51_1.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_51_3.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_51_5.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_51_7.png)
+
+
+- 다른 변수에 비해 X_01, X_06이 표준편차가 2 이상이다.
+  - step1,4의 누름량이 Y변수에 영향을 미칠 수도 있다.
+
+
+```python
+train_corr_2[train_corr_2>=0.2].index
+```
+
+
+
+
+    Index(['X_01', 'X_02', 'X_03', 'X_04', 'X_05', 'X_06', 'X_07', 'X_08', 'X_09',
+           'X_10', 'X_11', 'X_12', 'X_13', 'X_14', 'X_15', 'X_16', 'X_17', 'X_18',
+           'X_19', 'X_20', 'X_21', 'X_22', 'X_23', 'X_24', 'X_25', 'X_26', 'X_27',
+           'X_28', 'X_29', 'X_30', 'X_31', 'X_32', 'X_33', 'X_34', 'X_35', 'X_36',
+           'X_37', 'X_38', 'X_39', 'X_40', 'X_41', 'X_42', 'X_43', 'X_44', 'X_45',
+           'X_46', 'X_47', 'X_48', 'X_49', 'X_50', 'X_51', 'X_52', 'X_53', 'X_54',
+           'X_55', 'X_56', 'Y_01', 'Y_02', 'Y_03', 'Y_04', 'Y_05', 'Y_06', 'Y_07',
+           'Y_08', 'Y_09', 'Y_10', 'Y_11', 'Y_12', 'Y_13', 'Y_14'],
+          dtype='object')
+
+
+
+
+```python
+PCB1=train_df[['X_01','X_02','X_05','X_06']]
+PCB1.plot()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x7feab8c45190>
+
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_54_1.png)
+
+
+### 방열 재료 무게 & 방열 재료 면적
+
+
+```python
+train_df[['X_03','X_10','X_11']] #무게
+```
+
+
+
+
+
+  <div id="df-6e0052ea-bada-436e-9751-b936ce655cb8">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X_03</th>
+      <th>X_10</th>
+      <th>X_11</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>67.47</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>65.17</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>64.07</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>67.57</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>63.57</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>39602</th>
+      <td>62.27</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>39603</th>
+      <td>62.77</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>39604</th>
+      <td>64.67</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>39605</th>
+      <td>63.67</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>39606</th>
+      <td>65.67</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>39607 rows × 3 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-6e0052ea-bada-436e-9751-b936ce655cb8')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-6e0052ea-bada-436e-9751-b936ce655cb8 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-6e0052ea-bada-436e-9751-b936ce655cb8');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+train_df['X_03'].describe() # 방열 재료 1('X_03')의 무게 분포
+```
+
+
+
+
+    count    39607.000000
+    mean        68.826354
+    std          5.151167
+    min         56.470000
+    25%         65.070000
+    50%         67.270000
+    75%         71.770000
+    max         89.170000
+    Name: X_03, dtype: float64
+
+
+
+
+```python
+for i in ['X_03','X_10','X_11']:
+  plt.figure(figsize=(20,10))
+  sns.barplot(data=train_x.groupby([i])['X_08'].count().reset_index().rename(columns={"X_08":"수"}),x=i,y="수")
+  plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_58_1.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_58_3.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_58_5.png)
+
+
+- 방열재료 1의 무게는 혼합 분포 군집이다.
+- 방열재료 2,3은 대부분 결측치이다.
+
+
+```python
+train_df[['X_07','X_08','X_09']] # 면적
+```
+
+
+
+
+
+  <div id="df-d8417ffc-42a9-4a4f-8d8c-d2c39eccd4e9">
+    <div class="colab-df-container">
+      <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X_07</th>
+      <th>X_08</th>
+      <th>X_09</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29.45</td>
+      <td>62.38</td>
+      <td>245.71</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>28.73</td>
+      <td>61.23</td>
+      <td>233.61</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>28.81</td>
+      <td>105.77</td>
+      <td>272.20</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>28.92</td>
+      <td>115.21</td>
+      <td>255.36</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>29.68</td>
+      <td>103.38</td>
+      <td>241.46</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>39602</th>
+      <td>30.20</td>
+      <td>77.83</td>
+      <td>298.05</td>
+    </tr>
+    <tr>
+      <th>39603</th>
+      <td>29.21</td>
+      <td>102.25</td>
+      <td>270.67</td>
+    </tr>
+    <tr>
+      <th>39604</th>
+      <td>29.96</td>
+      <td>102.61</td>
+      <td>198.07</td>
+    </tr>
+    <tr>
+      <th>39605</th>
+      <td>30.30</td>
+      <td>112.60</td>
+      <td>275.52</td>
+    </tr>
+    <tr>
+      <th>39606</th>
+      <td>30.16</td>
+      <td>112.90</td>
+      <td>276.06</td>
+    </tr>
+  </tbody>
+</table>
+<p>39607 rows × 3 columns</p>
+</div>
+      <button class="colab-df-convert" onclick="convertToInteractive('df-d8417ffc-42a9-4a4f-8d8c-d2c39eccd4e9')"
+              title="Convert this dataframe to an interactive table."
+              style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M18.56 5.44l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94zm-11 1L8.5 8.5l.94-2.06 2.06-.94-2.06-.94L8.5 2.5l-.94 2.06-2.06.94zm10 10l.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06-.94 2.06-2.06.94z"/><path d="M17.41 7.96l-1.37-1.37c-.4-.4-.92-.59-1.43-.59-.52 0-1.04.2-1.43.59L10.3 9.45l-7.72 7.72c-.78.78-.78 2.05 0 2.83L4 21.41c.39.39.9.59 1.41.59.51 0 1.02-.2 1.41-.59l7.78-7.78 2.81-2.81c.8-.78.8-2.07 0-2.86zM5.41 20L4 18.59l7.72-7.72 1.47 1.35L5.41 20z"/>
+  </svg>
+      </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+      <script>
+        const buttonEl =
+          document.querySelector('#df-d8417ffc-42a9-4a4f-8d8c-d2c39eccd4e9 button.colab-df-convert');
+        buttonEl.style.display =
+          google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+        async function convertToInteractive(key) {
+          const element = document.querySelector('#df-d8417ffc-42a9-4a4f-8d8c-d2c39eccd4e9');
+          const dataTable =
+            await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                     [key], {});
+          if (!dataTable) return;
+
+          const docLinkHtml = 'Like what you see? Visit the ' +
+            '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+            + ' to learn more about interactive tables.';
+          element.innerHTML = '';
+          dataTable['output_type'] = 'display_data';
+          await google.colab.output.renderOutput(dataTable, element);
+          const docLink = document.createElement('div');
+          docLink.innerHTML = docLinkHtml;
+          element.appendChild(docLink);
+        }
+      </script>
+    </div>
+  </div>
+
+
+
+
+
+```python
+for i in ['X_07','X_08','X_09']:
+  plt.figure(figsize=(20,10))
+  sns.barplot(data=train_x.groupby([i])['X_03'].count().reset_index().rename(columns={"X_03":"수"}),x=i,y="수")
+  plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_61_1.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_61_3.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_61_5.png)
+
+
+
+```python
+for i in ['X_07','X_08','X_09']: # 방열 재료 면적의 데이터 분포 확인
+  print(i)
+  print(train_df[i].describe(),'\n')
+```
+
+    X_07
+    count    39607.000000
+    mean        29.407490
+    std          7.338204
+    min         14.140000
+    25%         27.890000
+    50%         28.840000
+    75%         29.870000
+    max        163.860000
+    Name: X_07, dtype: float64 
+    
+    X_08
+    count    39607.000000
+    mean       164.449320
+    std        220.402444
+    min         38.460000
+    25%        105.990000
+    50%        115.040000
+    75%        132.620000
+    max       2387.440000
+    Name: X_08, dtype: float64 
+    
+    X_09
+    count    39607.000000
+    mean       225.397470
+    std         66.734725
+    min         37.580000
+    25%        188.540000
+    50%        234.450000
+    75%        263.960000
+    max        637.490000
+    Name: X_09, dtype: float64 
+    
+
+
+- 방열 재료 1 면적 X_7의 표준편차 7 이상
+- 방열 재료 2,3 면적 X_8, X_9의 표준편차 각각 220, 66으로 매우 큼
+- 방열 재료 1,2,3의 최소 최대값 차이가 큼 => 이상치 의심됨
+
+이상치 제거
+- 이상치가 결과값에 대해 유의미할 수 있고, 도메인 지식 없이는 쉽게 지우면 안될 것 같다.
+
+### 안테나 패드 위치
+
+
+```python
+for i in ['X_14','X_15','X_16','X_17','X_18']:
+  plt.figure(figsize=(25,5))
+  sns.barplot(data=train_x.groupby([i])['X_03'].count().reset_index().rename(columns={"X_03":"수"}),x=i,y="수")
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_66_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_66_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_66_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_66_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_66_5.png)
+
+
+### 스크류 삽입 깊이 & 스크류 체결 시 분당 회전 수
+
+
+```python
+screw = train_x[['X_19','X_20','X_21','X_22']] # 1,2,3,4번 스크류 삽입 깊이
+
+fig, axes = plt.subplots(2,2, figsize = (25,20))
+
+sns.histplot(data = screw, x = "X_19", kde = True, ax = axes[0,0]).set(title = "스크류 삽입 깊이 1")
+sns.histplot(data = screw, x = "X_20", kde = True, ax = axes[0,1]).set(title = "스크류 삽입 깊이 2")
+sns.histplot(data = screw, x = "X_21", kde = True, ax = axes[1,0]).set(title = "스크류 삽입 깊이 3")
+sns.histplot(data = screw, x = "X_22", kde = True, ax = axes[1,1]).set(title = "스크류 삽입 깊이 4")
+
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_68_1.png)
+
+
+
+```python
+screw = train_x[['X_34','X_35','X_36','X_37']] # 스크류 체결 시 분당 회전수 1,2,3,4
+
+fig, axes = plt.subplots(2,2, figsize = (25,20))
+
+sns.histplot(data = screw, x = "X_34", kde = True, ax = axes[0,0]).set(title = "스크류 체결 시 분당 회전수 1")
+sns.histplot(data = screw, x = "X_35", kde = True, ax = axes[0,1]).set(title = "스크류 체결 시 분당 회전수 2")
+sns.histplot(data = screw, x = "X_36", kde = True, ax = axes[1,0]).set(title = "스크류 체결 시 분당 회전수 3")
+sns.histplot(data = screw, x = "X_37", kde = True, ax = axes[1,1]).set(title = "스크류 체결 시 분당 회전수 4")
+
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52404 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48516 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45817 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54924 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51204 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52404 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48516 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45817 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54924 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51204 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_69_1.png)
+
+
+- 스크류 관련 분포가 대부분 정규분포를 따르지 않는데, 그 이유가 무엇일까?
+=> 도메인 지식으로 분당 회전수는 중요하지 않다 그랬으므로 크게 신경쓰지 않아도 될 것 같다. 
+
+### 커넥터 핀 치수
+
+
+```python
+for i in ['X_24','X_25','X_26','X_27','X_28','X_29']:
+  plt.figure(figsize=(25,5))
+  sns.barplot(data=train_x.groupby([i])['X_03'].count().reset_index().rename(columns={"X_03":"수"}),x=i,y="수")
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_72_6.png)
+
+
+- 커넥터 1,2,3,4,5,6번 핀 치수에서는 모든 핀에서 평균에 모여 있다.
+- 모든 핀에서 평균 앞에 눈에 띄게 샘플의 수가 많이 존재하는 수치가 있다.
+
+### 레이돔 치수
+
+
+```python
+for i in ['X_41','X_42','X_43','X_44']:
+  plt.figure(figsize=(25,5),dpi=150)
+
+  x = train_x[i].index
+  y = train_x[i].values
+  plt.title(i)
+  plt.xlabel("안테나 부위 레이돔 치수")
+  plt.ylabel("치수 값")
+  plt.plot(x, y)
+  # plt.hlines(y=0, xmin=0, xmax=len(x), color='red', linestyle='dotted')
+  
+  plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_75_1.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_75_3.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_75_5.png)
+
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44050 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_75_7.png)
+
+
+
+```python
+for i in ['X_41','X_42','X_43','X_44']:
+  plt.figure(figsize=(25,5))
+  sns.barplot(data=train_x.groupby([i])['X_03'].count().reset_index().rename(columns={"X_03":"수"}),x=i,y="수")
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_76_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_76_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_76_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_76_4.png)
+
+
+- 레이돔 치수의 분포는 표준편차가 매우 작으며, 정규 분포를 따른다고 볼 수 있다.
+
+### 하우징 PCB 안착부 1,2,3 치수
+
+
+```python
+#하우징 PCB 안착부 치수 
+
+housing = train_x[['X_38','X_39','X_40']]
+
+fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (25,7))
+
+sns.histplot(data = housing, x = "X_38", kde = True, ax = ax1).set(title = "하우징 PCB 안착부 1 치수 ")
+sns.histplot(data = housing, x = "X_39", kde = True, ax = ax2).set(title = "하우징 PCB 안착부 2 치수")
+sns.histplot(data = housing, x = "X_40", kde = True, ax = ax3).set(title = "하우징 PCB 안착부 3 치수")
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54616 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50864 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51669 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52265 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54616 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50864 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51669 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52265 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_79_1.png)
+
+
+### RF 1,2,3,4,5,6,7 부분 SMT 납 량
+
+
+```python
+#RF 1,2,3,4,5,6,7 부분 SMT 납 량
+
+RF = train_x[['X_50','X_51','X_52','X_53','X_54','X_55','X_56']]
+
+fig, axes = plt.subplots(4,2, figsize = (30,40))
+
+sns.histplot(data = RF, x = "X_50", kde = True, ax = axes[0,0]).set(title = "RF 1 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_51", kde = True, ax = axes[0,1]).set(title = "RF 2 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_52", kde = True, ax = axes[1,0]).set(title = "RF 3 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_53", kde = True, ax = axes[1,1]).set(title = "RF 4 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_54", kde = True, ax = axes[2,0]).set(title = "RF 5 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_55", kde = True, ax = axes[2,1]).set(title = "RF 6 부분 SMT 납 량")
+sns.histplot(data = RF, x = "X_56", kde = True, ax = axes[3,0]).set(title = "RF 7 부분 SMT 납 량")
+plt.show()
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48516 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45225 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47049 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48516 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45225 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47049 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_81_1.png)
+
+
+# 상관관계 분석
+
+## 레이돔 치수별 각도별 안테나 gain 평균
+
+
+```python
+import seaborn as sns
+for i in ['X_41','X_42','X_43','X_44']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'레이돔 치수{i}')
+    
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_84_16.png)
+
+
+## 레이돔 치수별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_41','X_42','X_43','X_44']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'레이돔 치수{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47112 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46036 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_86_16.png)
+
+
+## 커넥터 핀 치수별 각도별 안테나 gain 평균
+
+
+```python
+for i in ['X_24','X_25','X_26','X_27','X_28','X_29']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'커넥터 핀 치수{i}')
+    
+```
+
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52964 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45349 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53552 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54592 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52964 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45349 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53552 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54592 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_16.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_17.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_18.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_19.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_20.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_21.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_22.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_23.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_88_24.png)
+
+
+## 커넥터 핀 치수별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_24','X_25','X_26','X_27','X_28','X_29']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'커넥터 핀 치수{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/ipykernel_launcher.py:3: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+      This is separate from the ipykernel package so we can avoid doing imports until
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52964 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45349 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53552 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54592 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52964 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45349 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53552 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54592 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49688 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_16.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_17.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_18.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_19.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_20.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_21.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_22.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_23.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_90_24.png)
+
+
+## 스크류 삽입 깊이별 각도별 안테나 평균
+
+
+```python
+for i in ['X_19','X_20','X_21','X_22']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'스크류 삽입 깊이{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_92_16.png)
+
+
+## 스크류 삽입 깊이별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_19','X_20','X_21','X_22']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'스크류 삽입 깊이{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49828 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53356 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47448 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49341 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51077 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44618 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51060 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_94_16.png)
+
+
+## 안테나 패드 위치별 각도별 안테나 gain 평균
+
+
+```python
+for i in ['X_14','X_15','X_16','X_17','X_18']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_16.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_17.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_18.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_19.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_96_20.png)
+
+
+## 안테나 패드 위치별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_14','X_15','X_16','X_17','X_18']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_16.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_17.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_18.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_19.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_98_20.png)
+
+
+## 방열 재료 면적별 각도별 안테나 Gain 평균
+
+
+```python
+for i in ['X_07','X_08','X_09']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_100_12.png)
+
+
+## 방열 재료 면적별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_07','X_08','X_09']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_102_12.png)
+
+
+## Cal 투입 전 대기 시간별 안테나 gain 평균
+
+
+```python
+for i in ['X_49']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_104_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_104_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_104_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_104_4.png)
+
+
+## Cal 투입 전 대기 시간별 각도별 신호 대 잡음비
+
+
+```python
+for i in ['X_49']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'안테나 패드 위치{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54056 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 46300 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50948 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_106_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_106_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_106_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_106_4.png)
+
+
+
+```python
+for i in ['X_03','X_10','X_11']:
+  for j in ['Y_01','Y_05','Y_07','Y_11']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'안테나 gain 평균{j}')
+    plt.xlabel(f'방열 재료 무게{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48169 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50676 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51116 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47308 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47924 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44172 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48169 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50676 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51116 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47308 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47924 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44172 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 8 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 8 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 50504 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 53580 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54217 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44512 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_107_12.png)
+
+
+
+```python
+for i in ['X_01','X_02','X_05','X_06']:
+  for j in ['Y_06','Y_08','Y_09','Y_10']:
+    plt.figure(figsize= (15,5))
+    sns.regplot(x=i, y=j, data=train_df)
+    plt.ylabel(f'신호 대 잡음비{j}')
+    plt.xlabel(f'PCB 체결 시 단계별 누름량{i}')
+```
+
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 52404 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44208 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45800 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 44228 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48324 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45572 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47492 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 47049 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 52404 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44208 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49884 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45800 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 44228 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48324 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45572 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47492 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 47049 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0.0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 49888 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 54840 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 45824 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51105 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 51020 missing from current font.
+      font.set_text(s, 0, flags=flags)
+    /usr/local/lib/python3.7/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 48708 missing from current font.
+      font.set_text(s, 0, flags=flags)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_1.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_2.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_3.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_4.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_5.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_6.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_7.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_8.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_9.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_10.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_11.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_12.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_13.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_14.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_15.png)
+
+
+
+![png](yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_files/yatap_0824_EDA%E1%84%8E%E1%85%AE%E1%84%80%E1%85%A1_108_16.png)
+
+
+
+```python
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+train_x_CV, val_x_CV, train_y_CV, val_y_CV = train_test_split(train_x, train_y, test_size=0.2, random_state=42)
+
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV 
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MinMaxScaler, StandardScaler 
+```
+
+
+```python
+def modelfit(pip_xgb, grid_param_xgb, x, y) : 
+    gs_xgb = (GridSearchCV(estimator=pip_xgb,
+                        param_grid=grid_param_xgb,
+                        cv=4,
+                        # scoring='neg_mean_squared_error',
+                        scoring='neg_root_mean_squared_error',
+                        n_jobs=-1,
+                        verbose=10))
+
+    gs_xgb = gs_xgb.fit(x, y)
+    print('Train Done.')
+
+    #Predict training set:
+    y_pred = gs_xgb.predict(x)
+
+    #Print model report:
+    print("\nModel Report")
+    print("\nCV 결과 : ", gs_xgb.cv_results_)
+    print("\n베스트 정답률 : ", gs_xgb.best_score_)
+    print("\n베스트 파라미터 : ", gs_xgb.best_params_)
+
+
+pip_xgb1 = Pipeline([('scl', StandardScaler()),
+    ('reg', MultiOutputRegressor(xgb.XGBRegressor()))])
+grid_param_xgb1 = {
+    'reg__estimator__max_depth' : [5, 6, 7],
+    'reg__estimator__gamma' : [1, 0.1, 0.01, 0.001, 0.0001, 0],
+    'reg__estimator__learning_rate' : [0.01, 0.03, 0.05, 0.07, 0.08],
+    'reg__estimator__subsample' : [0.4, 0.6, 0.8],
+    'reg__estimator__colsample_bytree' : [0.2, 0.6, 0.8]
+}
+
+modelfit(pip_xgb1, grid_param_xgb1, train_x_CV, train_y_CV)
+```
+
+    Fitting 4 folds for each of 810 candidates, totalling 3240 fits
+
+
+
+    ---------------------------------------------------------------------------
+
+    KeyboardInterrupt                         Traceback (most recent call last)
+
+    <ipython-input-63-d01b2344dd3e> in <module>
+         39 }
+         40 
+    ---> 41 modelfit(pip_xgb1, grid_param_xgb1, train_x_CV, train_y_CV)
+    
+
+    <ipython-input-63-d01b2344dd3e> in modelfit(pip_xgb, grid_param_xgb, x, y)
+         16                         verbose=10))
+         17 
+    ---> 18     gs_xgb = gs_xgb.fit(x, y)
+         19     print('Train Done.')
+         20 
+
+
+    /usr/local/lib/python3.7/dist-packages/sklearn/model_selection/_search.py in fit(self, X, y, groups, **fit_params)
+        889                 return results
+        890 
+    --> 891             self._run_search(evaluate_candidates)
+        892 
+        893             # multimetric is determined here because in the case of a callable
+
+
+    /usr/local/lib/python3.7/dist-packages/sklearn/model_selection/_search.py in _run_search(self, evaluate_candidates)
+       1390     def _run_search(self, evaluate_candidates):
+       1391         """Search all candidates in param_grid"""
+    -> 1392         evaluate_candidates(ParameterGrid(self.param_grid))
+       1393 
+       1394 
+
+
+    /usr/local/lib/python3.7/dist-packages/sklearn/model_selection/_search.py in evaluate_candidates(candidate_params, cv, more_results)
+        849                     )
+        850                     for (cand_idx, parameters), (split_idx, (train, test)) in product(
+    --> 851                         enumerate(candidate_params), enumerate(cv.split(X, y, groups))
+        852                     )
+        853                 )
+
+
+    /usr/local/lib/python3.7/dist-packages/joblib/parallel.py in __call__(self, iterable)
+       1096 
+       1097             with self._backend.retrieval_context():
+    -> 1098                 self.retrieve()
+       1099             # Make sure that we get a last message telling us we are done
+       1100             elapsed_time = time.time() - self._start_time
+
+
+    /usr/local/lib/python3.7/dist-packages/joblib/parallel.py in retrieve(self)
+        973             try:
+        974                 if getattr(self._backend, 'supports_timeout', False):
+    --> 975                     self._output.extend(job.get(timeout=self.timeout))
+        976                 else:
+        977                     self._output.extend(job.get())
+
+
+    /usr/local/lib/python3.7/dist-packages/joblib/_parallel_backends.py in wrap_future_result(future, timeout)
+        565         AsyncResults.get from multiprocessing."""
+        566         try:
+    --> 567             return future.result(timeout=timeout)
+        568         except CfTimeoutError as e:
+        569             raise TimeoutError from e
+
+
+    /usr/lib/python3.7/concurrent/futures/_base.py in result(self, timeout)
+        428                 return self.__get_result()
+        429 
+    --> 430             self._condition.wait(timeout)
+        431 
+        432             if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+
+
+    /usr/lib/python3.7/threading.py in wait(self, timeout)
+        294         try:    # restore state no matter what (e.g., KeyboardInterrupt)
+        295             if timeout is None:
+    --> 296                 waiter.acquire()
+        297                 gotit = True
+        298             else:
+
+
+    KeyboardInterrupt: 
+
+
+- 다음 모델은 너무 오래걸린다.
+
+# 모델링 0 (baseline (= multiouput))
+
+
+```python
+LR = MultiOutputRegressor(LinearRegression()).fit(train_x, train_y)
+print('Done.')
+```
+
+    Done.
+
+
+
+```python
+test_x = pd.read_csv('/content/drive/MyDrive/open/test.csv').drop(columns=['ID'])
+preds = LR.predict(test_x)
+print('Done.')
+```
+
+    Done.
+
+
+
+```python
+submit = pd.read_csv('/content/drive/MyDrive/open/sample_submission.csv')
+for idx, col in enumerate(submit.columns):
+  print(idx,col)
+  if col=='ID':
+      continue
+  submit[col] = preds[:,idx-1]
+print('Done.')
+```
+
+    0 ID
+    1 Y_01
+    2 Y_02
+    3 Y_03
+    4 Y_04
+    5 Y_05
+    6 Y_06
+    7 Y_07
+    8 Y_08
+    9 Y_09
+    10 Y_10
+    11 Y_11
+    12 Y_12
+    13 Y_13
+    14 Y_14
+    Done.
+
+
+
+```python
+submit.to_csv('/content/drive/MyDrive/submit.csv', index=False)
+```
+
+# 모델링 1 (multiouput + xgbregressor)
+
+## Model Fit
+
+
+```python
+import xgboost as xgb
+xgb = MultiOutputRegressor(xgb.XGBRegressor(n_estimators=100, learning_rate=0.08, gamma = 0, subsample=0.75, colsample_bytree = 1, max_depth=7) ).fit(train_x, train_y)
+print('Done.')
+```
+
+    [17:07:49] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:08:05] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:08:25] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:08:40] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:08:56] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:09:11] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:09:25] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:09:40] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:09:52] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:10:06] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:10:19] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:10:32] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:10:44] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    [17:10:57] WARNING: /workspace/src/objective/regression_obj.cu:152: reg:linear is now deprecated in favor of reg:squarederror.
+    Done.
+
+
+## Inference
+
+
+```python
+test_x = pd.read_csv('/content/drive/MyDrive/open/test.csv').drop(columns=['ID'])
+```
+
+
+```python
+preds = xgb.predict(test_x)
+print('Done.')
+```
+
+    Done.
+
+
+## Submit
+
+
+```python
+submit = pd.read_csv('/content/drive/MyDrive/open/sample_submission.csv')
+for idx, col in enumerate(submit.columns):
+  print(idx,col)
+  if col=='ID':
+      continue
+  submit[col] = preds[:,idx-1]
+print('Done.')
+submit.to_csv('/content/drive/MyDrive/submit.csv', index=False)
+```
+
+# 모델링 2 (k-fold+catboost)
+
+
+```python
+!pip install catboost
+```
+
+    Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/public/simple/
+    Collecting catboost
+      Downloading catboost-1.1.1-cp37-none-manylinux1_x86_64.whl (76.6 MB)
+    [K     |████████████████████████████████| 76.6 MB 1.2 MB/s 
+    [?25hRequirement already satisfied: pandas>=0.24.0 in /usr/local/lib/python3.7/dist-packages (from catboost) (1.3.5)
+    Requirement already satisfied: graphviz in /usr/local/lib/python3.7/dist-packages (from catboost) (0.10.1)
+    Requirement already satisfied: matplotlib in /usr/local/lib/python3.7/dist-packages (from catboost) (3.2.2)
+    Requirement already satisfied: numpy>=1.16.0 in /usr/local/lib/python3.7/dist-packages (from catboost) (1.21.6)
+    Requirement already satisfied: six in /usr/local/lib/python3.7/dist-packages (from catboost) (1.15.0)
+    Requirement already satisfied: scipy in /usr/local/lib/python3.7/dist-packages (from catboost) (1.7.3)
+    Requirement already satisfied: plotly in /usr/local/lib/python3.7/dist-packages (from catboost) (5.5.0)
+    Requirement already satisfied: pytz>=2017.3 in /usr/local/lib/python3.7/dist-packages (from pandas>=0.24.0->catboost) (2022.6)
+    Requirement already satisfied: python-dateutil>=2.7.3 in /usr/local/lib/python3.7/dist-packages (from pandas>=0.24.0->catboost) (2.8.2)
+    Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.7/dist-packages (from matplotlib->catboost) (0.11.0)
+    Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.7/dist-packages (from matplotlib->catboost) (1.4.4)
+    Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,>=2.0.1 in /usr/local/lib/python3.7/dist-packages (from matplotlib->catboost) (3.0.9)
+    Requirement already satisfied: typing-extensions in /usr/local/lib/python3.7/dist-packages (from kiwisolver>=1.0.1->matplotlib->catboost) (4.1.1)
+    Requirement already satisfied: tenacity>=6.2.0 in /usr/local/lib/python3.7/dist-packages (from plotly->catboost) (8.1.0)
+    Installing collected packages: catboost
+    Successfully installed catboost-1.1.1
+
+
+
+```python
+from sklearn.cluster import KMeans
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import RepeatedKFold, cross_val_score, StratifiedKFold, KFold
+import tensorflow as tf
+from catboost import CatBoostRegressor, Pool
+```
+
+
+```python
+n_splits = 5
+SEED=42
+predictions = []
+lgnrmses = []
+kfold = KFold(n_splits = n_splits, random_state = SEED, shuffle = True)
+for i, (train_idx, val_idx) in enumerate(kfold.split(train_x)):
+    preds = []
+    y_vals = []
+    predictions_ = []
+    for j in range(1, 15):
+        if j < 10:
+            train_y_ = train_y[f'Y_0{j}']
+        else:
+            train_y_ = train_y[f'Y_{j}']
+        X_train, y_train = train_x.iloc[train_idx], train_y_.iloc[train_idx]
+        X_val, y_val = train_x.iloc[val_idx], train_y_.iloc[val_idx]      
+        
+        print(f'fit {train_y.columns[j-1]}')
+        model = CatBoostRegressor(random_state = SEED)
+        model.fit(X_train, y_train, eval_set = [(X_val, y_val)], verbose = 0)
+        
+        print(f'predict {train_y.columns[j-1]}')
+        pred = model.predict(X_val)
+        prediction = model.predict(test_x)
+        #print(prediction)
+        predictions_.append(prediction)
+        #print(predictions_)
+        preds.append(pred)
+        y_vals.append(y_val)
+    predictions.append(predictions_)
+    print(predictions)
+```
+
+    fit Y_01
+    predict Y_01
+    fit Y_02
+    predict Y_02
+    fit Y_03
+    predict Y_03
+    fit Y_04
+    predict Y_04
+    fit Y_05
+    predict Y_05
+    fit Y_06
+    predict Y_06
+    fit Y_07
+    predict Y_07
+    fit Y_08
+    predict Y_08
+    fit Y_09
+    predict Y_09
+    fit Y_10
+    predict Y_10
+    fit Y_11
+    predict Y_11
+    fit Y_12
+    predict Y_12
+    fit Y_13
+    predict Y_13
+    fit Y_14
+    predict Y_14
+    [[array([1.43889726, 1.50494548, 1.48967359, ..., 1.22136509, 1.24209178,
+           1.29646513]), array([1.16649382, 1.2346706 , 1.20581294, ..., 0.9099596 , 0.8776174 ,
+           0.9450916 ]), array([1.12016625, 1.13796612, 1.08234457, ..., 0.95112197, 0.99584264,
+           1.01259663]), array([13.44193588, 13.30652395, 14.44292705, ..., 12.3794918 ,
+           12.99616326, 12.9049966 ]), array([31.15436199, 30.84760922, 30.53855131, ..., 31.15098853,
+           30.82704173, 30.23965342]), array([16.7830132 , 16.60143011, 16.87000194, ..., 16.61084099,
+           16.61600339, 16.52040595]), array([3.19644895, 3.13013578, 3.04798464, ..., 3.1166075 , 3.15718948,
+           3.26579287]), array([-26.13420124, -26.09314583, -26.03792696, ..., -26.48956728,
+           -26.45966939, -26.66393837]), array([-25.96592785, -26.11853525, -25.90955645, ..., -26.47698429,
+           -26.35787279, -26.59119537]), array([-22.14768105, -22.29667536, -21.85112756, ..., -22.7748053 ,
+           -22.75556669, -22.79559026]), array([24.52542238, 24.27841236, 24.40578486, ..., 24.18350461,
+           24.46328297, 23.98697941]), array([-26.00083412, -26.03298638, -25.77339911, ..., -26.42366392,
+           -26.32898015, -26.56068798]), array([-25.88633984, -26.01047261, -25.88195855, ..., -26.36836938,
+           -26.38618281, -26.44131459]), array([-26.05502137, -25.95826896, -25.935607  , ..., -26.4532318 ,
+           -26.42052842, -26.62606112])]]
+    fit Y_01
+    predict Y_01
+    fit Y_02
+    predict Y_02
+    fit Y_03
+    predict Y_03
+    fit Y_04
+    predict Y_04
+    fit Y_05
+    predict Y_05
+    fit Y_06
+    predict Y_06
+    fit Y_07
+    predict Y_07
+    fit Y_08
+    predict Y_08
+    fit Y_09
+    predict Y_09
+    fit Y_10
+    predict Y_10
+    fit Y_11
+    predict Y_11
+    fit Y_12
+    predict Y_12
+    fit Y_13
+    predict Y_13
+    fit Y_14
+    predict Y_14
+    [[array([1.43889726, 1.50494548, 1.48967359, ..., 1.22136509, 1.24209178,
+           1.29646513]), array([1.16649382, 1.2346706 , 1.20581294, ..., 0.9099596 , 0.8776174 ,
+           0.9450916 ]), array([1.12016625, 1.13796612, 1.08234457, ..., 0.95112197, 0.99584264,
+           1.01259663]), array([13.44193588, 13.30652395, 14.44292705, ..., 12.3794918 ,
+           12.99616326, 12.9049966 ]), array([31.15436199, 30.84760922, 30.53855131, ..., 31.15098853,
+           30.82704173, 30.23965342]), array([16.7830132 , 16.60143011, 16.87000194, ..., 16.61084099,
+           16.61600339, 16.52040595]), array([3.19644895, 3.13013578, 3.04798464, ..., 3.1166075 , 3.15718948,
+           3.26579287]), array([-26.13420124, -26.09314583, -26.03792696, ..., -26.48956728,
+           -26.45966939, -26.66393837]), array([-25.96592785, -26.11853525, -25.90955645, ..., -26.47698429,
+           -26.35787279, -26.59119537]), array([-22.14768105, -22.29667536, -21.85112756, ..., -22.7748053 ,
+           -22.75556669, -22.79559026]), array([24.52542238, 24.27841236, 24.40578486, ..., 24.18350461,
+           24.46328297, 23.98697941]), array([-26.00083412, -26.03298638, -25.77339911, ..., -26.42366392,
+           -26.32898015, -26.56068798]), array([-25.88633984, -26.01047261, -25.88195855, ..., -26.36836938,
+           -26.38618281, -26.44131459]), array([-26.05502137, -25.95826896, -25.935607  , ..., -26.4532318 ,
+           -26.42052842, -26.62606112])], [array([1.4318211 , 1.47456447, 1.41074416, ..., 1.24109891, 1.26960262,
+           1.31131897]), array([1.2404417 , 1.23728236, 1.18394738, ..., 0.91819363, 0.87683697,
+           1.01090137]), array([1.12343912, 1.14159504, 1.10740009, ..., 0.95068922, 0.956337  ,
+           0.993999  ]), array([13.75710265, 13.37951965, 14.97793844, ..., 13.37915267,
+           12.75758004, 12.74850454]), array([31.87684606, 30.76800519, 31.8776471 , ..., 31.0854906 ,
+           30.87825209, 30.32826888]), array([16.7193352 , 16.58604749, 17.18884887, ..., 16.66100229,
+           16.77299664, 16.61608172]), array([3.25676023, 3.13694974, 3.17977171, ..., 3.17466715, 3.17787642,
+           3.2044188 ]), array([-26.09011631, -26.16124291, -25.77324354, ..., -26.44140122,
+           -26.39014464, -26.54959679]), array([-25.98985973, -26.13074642, -25.9292436 , ..., -26.51468509,
+           -26.39452765, -26.64963288]), array([-22.27393854, -22.36156857, -21.94459753, ..., -22.91089616,
+           -22.51055632, -22.90433637]), array([24.54407641, 24.31726208, 24.52261685, ..., 24.41172758,
+           24.50180587, 24.07637835]), array([-25.98104231, -26.13379091, -25.78962528, ..., -26.41450068,
+           -26.30698005, -26.48569943]), array([-25.97924327, -26.07539282, -25.86791567, ..., -26.37012104,
+           -26.39380468, -26.5017337 ]), array([-25.91917278, -26.03061767, -26.01169485, ..., -26.42273793,
+           -26.3754301 , -26.56743776])]]
+    fit Y_01
+    predict Y_01
+    fit Y_02
+    predict Y_02
+    fit Y_03
+    predict Y_03
+    fit Y_04
+    predict Y_04
+    fit Y_05
+    predict Y_05
+    fit Y_06
+    predict Y_06
+    fit Y_07
+    predict Y_07
+    fit Y_08
+    predict Y_08
+    fit Y_09
+    predict Y_09
+    fit Y_10
+    predict Y_10
+    fit Y_11
+    predict Y_11
+    fit Y_12
+    predict Y_12
+    fit Y_13
+    predict Y_13
+    fit Y_14
+    predict Y_14
+    [[array([1.43889726, 1.50494548, 1.48967359, ..., 1.22136509, 1.24209178,
+           1.29646513]), array([1.16649382, 1.2346706 , 1.20581294, ..., 0.9099596 , 0.8776174 ,
+           0.9450916 ]), array([1.12016625, 1.13796612, 1.08234457, ..., 0.95112197, 0.99584264,
+           1.01259663]), array([13.44193588, 13.30652395, 14.44292705, ..., 12.3794918 ,
+           12.99616326, 12.9049966 ]), array([31.15436199, 30.84760922, 30.53855131, ..., 31.15098853,
+           30.82704173, 30.23965342]), array([16.7830132 , 16.60143011, 16.87000194, ..., 16.61084099,
+           16.61600339, 16.52040595]), array([3.19644895, 3.13013578, 3.04798464, ..., 3.1166075 , 3.15718948,
+           3.26579287]), array([-26.13420124, -26.09314583, -26.03792696, ..., -26.48956728,
+           -26.45966939, -26.66393837]), array([-25.96592785, -26.11853525, -25.90955645, ..., -26.47698429,
+           -26.35787279, -26.59119537]), array([-22.14768105, -22.29667536, -21.85112756, ..., -22.7748053 ,
+           -22.75556669, -22.79559026]), array([24.52542238, 24.27841236, 24.40578486, ..., 24.18350461,
+           24.46328297, 23.98697941]), array([-26.00083412, -26.03298638, -25.77339911, ..., -26.42366392,
+           -26.32898015, -26.56068798]), array([-25.88633984, -26.01047261, -25.88195855, ..., -26.36836938,
+           -26.38618281, -26.44131459]), array([-26.05502137, -25.95826896, -25.935607  , ..., -26.4532318 ,
+           -26.42052842, -26.62606112])], [array([1.4318211 , 1.47456447, 1.41074416, ..., 1.24109891, 1.26960262,
+           1.31131897]), array([1.2404417 , 1.23728236, 1.18394738, ..., 0.91819363, 0.87683697,
+           1.01090137]), array([1.12343912, 1.14159504, 1.10740009, ..., 0.95068922, 0.956337  ,
+           0.993999  ]), array([13.75710265, 13.37951965, 14.97793844, ..., 13.37915267,
+           12.75758004, 12.74850454]), array([31.87684606, 30.76800519, 31.8776471 , ..., 31.0854906 ,
+           30.87825209, 30.32826888]), array([16.7193352 , 16.58604749, 17.18884887, ..., 16.66100229,
+           16.77299664, 16.61608172]), array([3.25676023, 3.13694974, 3.17977171, ..., 3.17466715, 3.17787642,
+           3.2044188 ]), array([-26.09011631, -26.16124291, -25.77324354, ..., -26.44140122,
+           -26.39014464, -26.54959679]), array([-25.98985973, -26.13074642, -25.9292436 , ..., -26.51468509,
+           -26.39452765, -26.64963288]), array([-22.27393854, -22.36156857, -21.94459753, ..., -22.91089616,
+           -22.51055632, -22.90433637]), array([24.54407641, 24.31726208, 24.52261685, ..., 24.41172758,
+           24.50180587, 24.07637835]), array([-25.98104231, -26.13379091, -25.78962528, ..., -26.41450068,
+           -26.30698005, -26.48569943]), array([-25.97924327, -26.07539282, -25.86791567, ..., -26.37012104,
+           -26.39380468, -26.5017337 ]), array([-25.91917278, -26.03061767, -26.01169485, ..., -26.42273793,
+           -26.3754301 , -26.56743776])], [array([1.39975462, 1.50669229, 1.45155565, ..., 1.25125334, 1.15266342,
+           1.27697182]), array([1.17755474, 1.21864588, 1.15068799, ..., 0.9317562 , 0.86150095,
+           0.96083457]), array([1.08430253, 1.132097  , 1.07985119, ..., 1.01903736, 0.88857896,
+           1.08135316]), array([13.53832619, 13.32292628, 14.91926129, ..., 12.76596437,
+           12.64280477, 12.29207902]), array([30.78877239, 30.86828143, 32.13036058, ..., 31.307064  ,
+           31.13699116, 30.52266065]), array([16.45277054, 16.45960232, 16.96343785, ..., 16.587056  ,
+           16.5820185 , 16.55120943]), array([3.18699448, 3.17141062, 3.13673047, ..., 3.21427796, 3.19304859,
+           3.22686924]), array([-26.15995438, -26.17202267, -26.05574264, ..., -26.52907349,
+           -26.51273275, -26.68991653]), array([-26.20253721, -26.17609416, -25.85346434, ..., -26.48422116,
+           -26.47990709, -26.61561259]), array([-22.29588106, -22.30558486, -21.88828648, ..., -23.07397387,
+           -23.01084158, -23.02214431]), array([24.41418372, 24.32362951, 24.41939277, ..., 24.34120499,
+           24.45673483, 24.1623693 ]), array([-26.15306518, -26.04713144, -25.69201682, ..., -26.42862512,
+           -26.49607191, -26.60737319]), array([-26.08123283, -26.0023926 , -25.68289104, ..., -26.45854584,
+           -26.44694696, -26.56781033]), array([-26.19080615, -26.18072906, -25.64119259, ..., -26.41361748,
+           -26.34420519, -26.53733654])]]
+    fit Y_01
+    predict Y_01
+    fit Y_02
+    predict Y_02
+    fit Y_03
+    predict Y_03
+    fit Y_04
+    predict Y_04
+    fit Y_05
+    predict Y_05
+    fit Y_06
+    predict Y_06
+    fit Y_07
+    predict Y_07
+    fit Y_08
+    predict Y_08
+    fit Y_09
+    predict Y_09
+    fit Y_10
+    predict Y_10
+    fit Y_11
+    predict Y_11
+    fit Y_12
+    predict Y_12
+    fit Y_13
+    predict Y_13
+    fit Y_14
+    predict Y_14
+    [[array([1.43889726, 1.50494548, 1.48967359, ..., 1.22136509, 1.24209178,
+           1.29646513]), array([1.16649382, 1.2346706 , 1.20581294, ..., 0.9099596 , 0.8776174 ,
+           0.9450916 ]), array([1.12016625, 1.13796612, 1.08234457, ..., 0.95112197, 0.99584264,
+           1.01259663]), array([13.44193588, 13.30652395, 14.44292705, ..., 12.3794918 ,
+           12.99616326, 12.9049966 ]), array([31.15436199, 30.84760922, 30.53855131, ..., 31.15098853,
+           30.82704173, 30.23965342]), array([16.7830132 , 16.60143011, 16.87000194, ..., 16.61084099,
+           16.61600339, 16.52040595]), array([3.19644895, 3.13013578, 3.04798464, ..., 3.1166075 , 3.15718948,
+           3.26579287]), array([-26.13420124, -26.09314583, -26.03792696, ..., -26.48956728,
+           -26.45966939, -26.66393837]), array([-25.96592785, -26.11853525, -25.90955645, ..., -26.47698429,
+           -26.35787279, -26.59119537]), array([-22.14768105, -22.29667536, -21.85112756, ..., -22.7748053 ,
+           -22.75556669, -22.79559026]), array([24.52542238, 24.27841236, 24.40578486, ..., 24.18350461,
+           24.46328297, 23.98697941]), array([-26.00083412, -26.03298638, -25.77339911, ..., -26.42366392,
+           -26.32898015, -26.56068798]), array([-25.88633984, -26.01047261, -25.88195855, ..., -26.36836938,
+           -26.38618281, -26.44131459]), array([-26.05502137, -25.95826896, -25.935607  , ..., -26.4532318 ,
+           -26.42052842, -26.62606112])], [array([1.4318211 , 1.47456447, 1.41074416, ..., 1.24109891, 1.26960262,
+           1.31131897]), array([1.2404417 , 1.23728236, 1.18394738, ..., 0.91819363, 0.87683697,
+           1.01090137]), array([1.12343912, 1.14159504, 1.10740009, ..., 0.95068922, 0.956337  ,
+           0.993999  ]), array([13.75710265, 13.37951965, 14.97793844, ..., 13.37915267,
+           12.75758004, 12.74850454]), array([31.87684606, 30.76800519, 31.8776471 , ..., 31.0854906 ,
+           30.87825209, 30.32826888]), array([16.7193352 , 16.58604749, 17.18884887, ..., 16.66100229,
+           16.77299664, 16.61608172]), array([3.25676023, 3.13694974, 3.17977171, ..., 3.17466715, 3.17787642,
+           3.2044188 ]), array([-26.09011631, -26.16124291, -25.77324354, ..., -26.44140122,
+           -26.39014464, -26.54959679]), array([-25.98985973, -26.13074642, -25.9292436 , ..., -26.51468509,
+           -26.39452765, -26.64963288]), array([-22.27393854, -22.36156857, -21.94459753, ..., -22.91089616,
+           -22.51055632, -22.90433637]), array([24.54407641, 24.31726208, 24.52261685, ..., 24.41172758,
+           24.50180587, 24.07637835]), array([-25.98104231, -26.13379091, -25.78962528, ..., -26.41450068,
+           -26.30698005, -26.48569943]), array([-25.97924327, -26.07539282, -25.86791567, ..., -26.37012104,
+           -26.39380468, -26.5017337 ]), array([-25.91917278, -26.03061767, -26.01169485, ..., -26.42273793,
+           -26.3754301 , -26.56743776])], [array([1.39975462, 1.50669229, 1.45155565, ..., 1.25125334, 1.15266342,
+           1.27697182]), array([1.17755474, 1.21864588, 1.15068799, ..., 0.9317562 , 0.86150095,
+           0.96083457]), array([1.08430253, 1.132097  , 1.07985119, ..., 1.01903736, 0.88857896,
+           1.08135316]), array([13.53832619, 13.32292628, 14.91926129, ..., 12.76596437,
+           12.64280477, 12.29207902]), array([30.78877239, 30.86828143, 32.13036058, ..., 31.307064  ,
+           31.13699116, 30.52266065]), array([16.45277054, 16.45960232, 16.96343785, ..., 16.587056  ,
+           16.5820185 , 16.55120943]), array([3.18699448, 3.17141062, 3.13673047, ..., 3.21427796, 3.19304859,
+           3.22686924]), array([-26.15995438, -26.17202267, -26.05574264, ..., -26.52907349,
+           -26.51273275, -26.68991653]), array([-26.20253721, -26.17609416, -25.85346434, ..., -26.48422116,
+           -26.47990709, -26.61561259]), array([-22.29588106, -22.30558486, -21.88828648, ..., -23.07397387,
+           -23.01084158, -23.02214431]), array([24.41418372, 24.32362951, 24.41939277, ..., 24.34120499,
+           24.45673483, 24.1623693 ]), array([-26.15306518, -26.04713144, -25.69201682, ..., -26.42862512,
+           -26.49607191, -26.60737319]), array([-26.08123283, -26.0023926 , -25.68289104, ..., -26.45854584,
+           -26.44694696, -26.56781033]), array([-26.19080615, -26.18072906, -25.64119259, ..., -26.41361748,
+           -26.34420519, -26.53733654])], [array([1.38585724, 1.49358357, 1.36929075, ..., 1.21261666, 1.22311426,
+           1.2773452 ]), array([1.18526303, 1.21803812, 1.1553309 , ..., 0.91723234, 0.8927828 ,
+           0.95895361]), array([1.11732952, 1.16216025, 1.13467611, ..., 0.94515627, 0.9197305 ,
+           1.0533089 ]), array([13.81686304, 13.21876604, 15.08719487, ..., 12.90636185,
+           13.04019837, 12.97720862]), array([31.73235941, 30.90804464, 31.42531168, ..., 31.11899258,
+           31.1430906 , 30.52664101]), array([16.78672438, 16.64365049, 17.06357065, ..., 16.63241255,
+           16.68142115, 16.66207909]), array([3.17343091, 3.19754088, 2.95210343, ..., 3.20924432, 3.1528191 ,
+           3.23103817]), array([-26.06968767, -26.15919315, -26.04920272, ..., -26.52164191,
+           -26.53463224, -26.47854259]), array([-26.09710832, -26.15976945, -25.67188932, ..., -26.48514553,
+           -26.45450725, -26.49771233]), array([-22.1252203 , -22.21592317, -22.0903521 , ..., -22.79669251,
+           -22.74997012, -22.77967225]), array([24.63523844, 24.30008323, 24.65721355, ..., 24.32949557,
+           24.47325841, 24.2108857 ]), array([-26.08617724, -26.12090978, -25.82084126, ..., -26.40759289,
+           -26.38512691, -26.39847505]), array([-26.04901722, -26.23108035, -25.84785881, ..., -26.40068283,
+           -26.39907248, -26.40091387]), array([-26.20667777, -26.10036806, -25.91851171, ..., -26.41637632,
+           -26.45416586, -26.54848108])]]
+    fit Y_01
+    predict Y_01
+    fit Y_02
+    predict Y_02
+    fit Y_03
+    predict Y_03
+    fit Y_04
+    predict Y_04
+    fit Y_05
+    predict Y_05
+    fit Y_06
+    predict Y_06
+    fit Y_07
+    predict Y_07
+    fit Y_08
+    predict Y_08
+    fit Y_09
+    predict Y_09
+    fit Y_10
+    predict Y_10
+    fit Y_11
+    predict Y_11
+    fit Y_12
+    predict Y_12
+    fit Y_13
+    predict Y_13
+    fit Y_14
+    predict Y_14
+    [[array([1.43889726, 1.50494548, 1.48967359, ..., 1.22136509, 1.24209178,
+           1.29646513]), array([1.16649382, 1.2346706 , 1.20581294, ..., 0.9099596 , 0.8776174 ,
+           0.9450916 ]), array([1.12016625, 1.13796612, 1.08234457, ..., 0.95112197, 0.99584264,
+           1.01259663]), array([13.44193588, 13.30652395, 14.44292705, ..., 12.3794918 ,
+           12.99616326, 12.9049966 ]), array([31.15436199, 30.84760922, 30.53855131, ..., 31.15098853,
+           30.82704173, 30.23965342]), array([16.7830132 , 16.60143011, 16.87000194, ..., 16.61084099,
+           16.61600339, 16.52040595]), array([3.19644895, 3.13013578, 3.04798464, ..., 3.1166075 , 3.15718948,
+           3.26579287]), array([-26.13420124, -26.09314583, -26.03792696, ..., -26.48956728,
+           -26.45966939, -26.66393837]), array([-25.96592785, -26.11853525, -25.90955645, ..., -26.47698429,
+           -26.35787279, -26.59119537]), array([-22.14768105, -22.29667536, -21.85112756, ..., -22.7748053 ,
+           -22.75556669, -22.79559026]), array([24.52542238, 24.27841236, 24.40578486, ..., 24.18350461,
+           24.46328297, 23.98697941]), array([-26.00083412, -26.03298638, -25.77339911, ..., -26.42366392,
+           -26.32898015, -26.56068798]), array([-25.88633984, -26.01047261, -25.88195855, ..., -26.36836938,
+           -26.38618281, -26.44131459]), array([-26.05502137, -25.95826896, -25.935607  , ..., -26.4532318 ,
+           -26.42052842, -26.62606112])], [array([1.4318211 , 1.47456447, 1.41074416, ..., 1.24109891, 1.26960262,
+           1.31131897]), array([1.2404417 , 1.23728236, 1.18394738, ..., 0.91819363, 0.87683697,
+           1.01090137]), array([1.12343912, 1.14159504, 1.10740009, ..., 0.95068922, 0.956337  ,
+           0.993999  ]), array([13.75710265, 13.37951965, 14.97793844, ..., 13.37915267,
+           12.75758004, 12.74850454]), array([31.87684606, 30.76800519, 31.8776471 , ..., 31.0854906 ,
+           30.87825209, 30.32826888]), array([16.7193352 , 16.58604749, 17.18884887, ..., 16.66100229,
+           16.77299664, 16.61608172]), array([3.25676023, 3.13694974, 3.17977171, ..., 3.17466715, 3.17787642,
+           3.2044188 ]), array([-26.09011631, -26.16124291, -25.77324354, ..., -26.44140122,
+           -26.39014464, -26.54959679]), array([-25.98985973, -26.13074642, -25.9292436 , ..., -26.51468509,
+           -26.39452765, -26.64963288]), array([-22.27393854, -22.36156857, -21.94459753, ..., -22.91089616,
+           -22.51055632, -22.90433637]), array([24.54407641, 24.31726208, 24.52261685, ..., 24.41172758,
+           24.50180587, 24.07637835]), array([-25.98104231, -26.13379091, -25.78962528, ..., -26.41450068,
+           -26.30698005, -26.48569943]), array([-25.97924327, -26.07539282, -25.86791567, ..., -26.37012104,
+           -26.39380468, -26.5017337 ]), array([-25.91917278, -26.03061767, -26.01169485, ..., -26.42273793,
+           -26.3754301 , -26.56743776])], [array([1.39975462, 1.50669229, 1.45155565, ..., 1.25125334, 1.15266342,
+           1.27697182]), array([1.17755474, 1.21864588, 1.15068799, ..., 0.9317562 , 0.86150095,
+           0.96083457]), array([1.08430253, 1.132097  , 1.07985119, ..., 1.01903736, 0.88857896,
+           1.08135316]), array([13.53832619, 13.32292628, 14.91926129, ..., 12.76596437,
+           12.64280477, 12.29207902]), array([30.78877239, 30.86828143, 32.13036058, ..., 31.307064  ,
+           31.13699116, 30.52266065]), array([16.45277054, 16.45960232, 16.96343785, ..., 16.587056  ,
+           16.5820185 , 16.55120943]), array([3.18699448, 3.17141062, 3.13673047, ..., 3.21427796, 3.19304859,
+           3.22686924]), array([-26.15995438, -26.17202267, -26.05574264, ..., -26.52907349,
+           -26.51273275, -26.68991653]), array([-26.20253721, -26.17609416, -25.85346434, ..., -26.48422116,
+           -26.47990709, -26.61561259]), array([-22.29588106, -22.30558486, -21.88828648, ..., -23.07397387,
+           -23.01084158, -23.02214431]), array([24.41418372, 24.32362951, 24.41939277, ..., 24.34120499,
+           24.45673483, 24.1623693 ]), array([-26.15306518, -26.04713144, -25.69201682, ..., -26.42862512,
+           -26.49607191, -26.60737319]), array([-26.08123283, -26.0023926 , -25.68289104, ..., -26.45854584,
+           -26.44694696, -26.56781033]), array([-26.19080615, -26.18072906, -25.64119259, ..., -26.41361748,
+           -26.34420519, -26.53733654])], [array([1.38585724, 1.49358357, 1.36929075, ..., 1.21261666, 1.22311426,
+           1.2773452 ]), array([1.18526303, 1.21803812, 1.1553309 , ..., 0.91723234, 0.8927828 ,
+           0.95895361]), array([1.11732952, 1.16216025, 1.13467611, ..., 0.94515627, 0.9197305 ,
+           1.0533089 ]), array([13.81686304, 13.21876604, 15.08719487, ..., 12.90636185,
+           13.04019837, 12.97720862]), array([31.73235941, 30.90804464, 31.42531168, ..., 31.11899258,
+           31.1430906 , 30.52664101]), array([16.78672438, 16.64365049, 17.06357065, ..., 16.63241255,
+           16.68142115, 16.66207909]), array([3.17343091, 3.19754088, 2.95210343, ..., 3.20924432, 3.1528191 ,
+           3.23103817]), array([-26.06968767, -26.15919315, -26.04920272, ..., -26.52164191,
+           -26.53463224, -26.47854259]), array([-26.09710832, -26.15976945, -25.67188932, ..., -26.48514553,
+           -26.45450725, -26.49771233]), array([-22.1252203 , -22.21592317, -22.0903521 , ..., -22.79669251,
+           -22.74997012, -22.77967225]), array([24.63523844, 24.30008323, 24.65721355, ..., 24.32949557,
+           24.47325841, 24.2108857 ]), array([-26.08617724, -26.12090978, -25.82084126, ..., -26.40759289,
+           -26.38512691, -26.39847505]), array([-26.04901722, -26.23108035, -25.84785881, ..., -26.40068283,
+           -26.39907248, -26.40091387]), array([-26.20667777, -26.10036806, -25.91851171, ..., -26.41637632,
+           -26.45416586, -26.54848108])], [array([1.45076499, 1.49353717, 1.47299798, ..., 1.24578913, 1.22749371,
+           1.34182084]), array([1.15204358, 1.16720077, 1.17350121, ..., 0.93696075, 0.88973905,
+           0.92997426]), array([1.13133269, 1.18109562, 1.17622463, ..., 1.01177518, 0.94700863,
+           1.02659127]), array([14.40000706, 13.15284471, 14.93810593, ..., 12.90041714,
+           13.96043984, 12.99179766]), array([30.70158401, 31.06820138, 31.98530372, ..., 31.20625767,
+           31.11871451, 30.54302003]), array([16.92526067, 16.62374049, 17.04879805, ..., 16.67831031,
+           16.66587941, 16.65501484]), array([3.0856467 , 3.1136945 , 2.92861537, ..., 3.13994936, 3.15120996,
+           3.2276748 ]), array([-26.01220627, -26.16670394, -25.67443514, ..., -26.45356596,
+           -26.41813618, -26.65385965]), array([-25.85504665, -26.20245046, -25.73888458, ..., -26.51846763,
+           -26.4116611 , -26.67539573]), array([-22.10099076, -22.38662202, -21.82893381, ..., -22.80113451,
+           -22.79967969, -22.85452648]), array([24.34986555, 24.2935109 , 24.83652629, ..., 24.3451493 ,
+           24.47655339, 24.15700545]), array([-25.92763166, -26.08610863, -25.67519021, ..., -26.43579687,
+           -26.39182459, -26.47763197]), array([-26.03844826, -26.05695014, -25.4763004 , ..., -26.35580023,
+           -26.3762556 , -26.47202168]), array([-25.99006995, -26.14075588, -25.72484906, ..., -26.53393665,
+           -26.33972929, -26.62082201])]]
+
+
+
+```python
+final_prediction = np.mean(np.array(predictions), axis=0).T
+
+for idx, col in enumerate(submit.columns):
+    if col=='ID':
+        continue
+    submit[col] = final_prediction[:,idx-1]
+print('Done.')
+```
+
+    Done.
+
+
+
+```python
+!jupyter nbconvert --to markdown "/content/drive/MyDrive/yatap_0824_EDA추가.ipynb"
+
+```
