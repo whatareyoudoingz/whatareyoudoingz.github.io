@@ -43,7 +43,7 @@ defaults:
       type: studys
     values:
       layout: study
-      permalink: /study/:title
+      permalink: /studys/:title
   - scope:
       type: tags
     values:
