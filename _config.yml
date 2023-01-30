@@ -19,6 +19,8 @@ collections:
     output: true
   projects:
     output: true
+  studys:
+    output: true
   tags:
     output: true
 
@@ -37,6 +39,11 @@ defaults:
     values:
       layout: project
       permalink: /projects/:title
+  - scope:
+      type: studys
+    values:
+      layout: study
+      permalink: /study/:title
   - scope:
       type: tags
     values:
