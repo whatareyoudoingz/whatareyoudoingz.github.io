@@ -1,10 +1,9 @@
 ---
 title: 2022 연구데이터 분석활용 경진대회
 description:  
-    - 대회 명 _ 2022 연구데이터 활용분석 경진대회
-    - 대회 사이트 _ [http://dataon-con.kr/](http://dataon-con.kr/)
-    - 팀 명 _ 데사증후군 (Data Science Syndrom)
-    - "데사증후군" github 링크 _ [https://github.com/Data-analysis-utilization-contest](https://github.com/Data-analysis-utilization-contest)
+대회 사이트 _ [http://dataon-con.kr/](http://dataon-con.kr/)
+팀 명 _ 데사증후군 (Data Science Syndrom)
+데사증후군 github 링크 _ [https://github.com/Data-analysis-utilization-contest](https://github.com/Data-analysis-utilization-contest)
 image: IMG_4513.JPG
 date: 2022-07 ~ 2022-09
 ---
