@@ -15,7 +15,7 @@ visible: true
         {% elsif study.youtube %}
         <div
           class="hyde post-thumbnail"
-          style="background-image: url('{{ project.youtube | prepend: 'https://img.youtube.com/vi/' }}/maxresdefault.jpg')"
+          style="background-image: url('{{ study.youtube | prepend: 'https://img.youtube.com/vi/' }}/maxresdefault.jpg')"
         ></div>
         {% else %}
         <div class="hyde post-thumbnail"></div>
