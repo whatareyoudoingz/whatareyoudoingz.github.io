@@ -1,18 +1,18 @@
 ---
 title: Study
 description: 지금까지 스터디했던 기록들을 모아놓은 곳입니다.
-permalink: sutdys
+permalink: studys
 visible: true
 ---
 
 <div class="hyde posts">
-  {% assign sorted = site.projects | sort: 'date' | reverse %} {% for project in sorted %}
+  {% assign sorted = site.studys | sort: 'date' | reverse %} {% for study in sorted %}
   <div class="hyde post{% unless forloop.last %} divider{% endunless %}">
-    <a href="{{ project.url }}">
+    <a href="{{ study.url }}">
       <div class="hyde post-thumbnail-wrapper">
-        {% if project.image %}
-        <div class="hyde post-thumbnail" style="background-image: url('/assets/images/projects/{{ project.image }}');"></div>
-        {% elsif project.youtube %}
+        {% if study.image %}
+        <div class="hyde post-thumbnail" style="background-image: url('/assets/images/studys/{{ project.image }}');"></div>
+        {% elsif study.youtube %}
         <div
           class="hyde post-thumbnail"
           style="background-image: url('{{ project.youtube | prepend: 'https://img.youtube.com/vi/' }}/maxresdefault.jpg')"
@@ -22,11 +22,11 @@ visible: true
         {% endif %}
       </div>
     </a>
-    <a href="{{ project.url }}">
-      <h2 class="hyde post-title">{{ project.title }}</h2>
+    <a href="{{ study.url }}">
+      <h2 class="hyde post-title">{{ study.title }}</h2>
     </a>
     <div class="hyde post-trail">
-      <span class="hyde post-date">{{ project.date | date: '%Y년 %-m월 %-d일' }}</span>
+      <span class="hyde post-date">{{ study.date | date: '%Y년 %-m월 %-d일' }}</span>
     </div>
   </div>
   {% else %} {% include empty.html %} {% endfor %}
