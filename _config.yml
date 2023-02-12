@@ -6,7 +6,7 @@ url: "https://whatareyoudoingz.github.io"
 github: whatareyoudoingz
 email: wlsdk3165@naver.com
 google_analytics: <YOUR UA TOKEN>
-
+google_site_verification:  7awHJL7hoo205m0flTMMUw1oOEDt82IIw-omHNiK64M
 exclude: [README.md, Gemfile, Gemfile.lock]
 
 comments:
