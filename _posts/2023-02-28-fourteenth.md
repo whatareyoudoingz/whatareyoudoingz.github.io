@@ -99,8 +99,6 @@ for x in ['train_data','valid_data','test_data']:
   os.mkdir(add)
 ```
 
-<br/>
-
 #### 훈련 데이터 구축 
 ```python
 keywords=['배달음식쓰레기']
