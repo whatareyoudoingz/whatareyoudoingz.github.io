@@ -188,4 +188,4 @@ for i in keywords:
 - 타깃 클래스 16개 
 - raw 데이터 개수 :  143개
 - 데이터 증강 후 데이터 : 143 * 3 = 439개
-![recycle-project2](recycle-project2.png)
+![recycle-project2](/Users/i/Desktop/whatareyoudoingz.github.io/_images/recycle-project2.png)
