@@ -71,8 +71,8 @@ author: Jins
     - 검증 데이터 (2019~2020년도 기준)
     - 테스트 데이터 (2018~2019년도 기준)
 - 참고 사이트
-    - https://icrawler.readthedocs.io/en/latest/builtin.html#search-engine-crawlers 
-    - https://inhovation97.tistory.com/36
+    - [https://icrawler.readthedocs.io/en/latest/](https://icrawler.readthedocs.io/en/latest/html#search-engine-crawlers)
+    - [https://inhovation97.tistory.com/36](https://inhovation97.tistory.com/36)
 
 <br/>
 
