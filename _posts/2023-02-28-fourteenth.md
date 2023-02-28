@@ -13,7 +13,7 @@ author: Jins
   - "진지도" 해커톤 링크 : [https://aifactory.space/competition/detail/2282](https://aifactory.space/competition/detail/2282)
   - "진지도" 협업 기록 github README 
 
-    ![recycle-project readme](../_images/recycle-project.png)
+    ![recycle-project readme](recycle-project.png)
 
 <br/>
 
@@ -46,7 +46,7 @@ author: Jins
 
   5. **최종 파이프라인 연결**
         - 파이프라인 모듈명 : ***pipline***
-        ![recycle-pipline](../_images/recycle-pipline.png)
+        ![recycle-pipline](recycle-pipline.png)
 
 <br/>
 
@@ -193,4 +193,4 @@ for i in keywords:
 - 타깃 클래스 16개 
 - raw 데이터 개수 :  143개
 - 데이터 증강 후 데이터 : 143 * 3 = 439개
-![recycle-project2](../_images/recycle-project2.png)
+![recycle-project2](recycle-project2.png)
