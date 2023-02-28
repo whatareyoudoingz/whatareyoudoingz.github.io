@@ -13,7 +13,7 @@ author: Jins
   - "진지도" 해커톤 링크 : [https://aifactory.space/competition/detail/2282](https://aifactory.space/competition/detail/2282)
   - "진지도" 협업 기록 github README 
 
-    ![recycle-project readme](recycle-project.png)
+    ![recycle-project readme](/Users/i/Desktop/whatareyoudoingz.github.io/_images/recycle-project.png)
 
 <br/>
 
@@ -46,7 +46,7 @@ author: Jins
 
   5. **최종 파이프라인 연결**
         - 파이프라인 모듈명 : ***pipline***
-        ![recycle-pipline](recycle-pipline.png)
+        ![recycle-pipline](/Users/i/Desktop/whatareyoudoingz.github.io/_images/recycle-pipline.png)
 
 <br/>
 
