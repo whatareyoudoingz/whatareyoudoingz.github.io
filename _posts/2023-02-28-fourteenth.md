@@ -42,9 +42,7 @@ author: Jins
 
   3. **2차 모델 개발** 
 
-  4. **3차 모델 개발**
-
-  5. **최종 파이프라인 연결**
+  4. **최종 파이프라인 연결 및 구축**
         - 파이프라인 모듈명 : ***pipline***
         ![recycle-pipline](https://user-images.githubusercontent.com/108795647/221893314-ae3d8f54-1162-44ee-9ab0-ea8641079ffa.png)
 
@@ -186,6 +184,6 @@ for i in keywords:
 ~~라벨링하는 것이 귀찮긴 하지만 (어차피 기존의 데이터 사이트들에서 구축되어있지 않았던 데이터를 학습시키는 거라 직접 라벨링 작업 해야했음...) 코드짜기 귀찮을 때 매우 좋은 사이트인 것 같습니다.. 강추..!!~~
 
 - 타깃 클래스 16개 
-- raw 데이터 개수 :  143개
+- raw 데이터 개수 : 143개
 - 데이터 증강 후 데이터 : 143 * 3 = 439개
 ![recycle-project2](https://user-images.githubusercontent.com/108795647/221893546-9216d5a0-4c47-4f9c-8eb3-fd7aa00944f0.png)
