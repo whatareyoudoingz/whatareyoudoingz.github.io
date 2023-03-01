@@ -26,7 +26,7 @@ author: Jins
 
   제가 맡은 과제는 프로젝트 총괄, 기획, 데이터 구축, 최종 파이프라인 구축, 1차 모델 개발입니다.
 
-  제가 사용하고자 한 데이터는 구글에서 구축한 이미지 데이터이며(raw_images), Roboflow에서 bounding box labeling 작업 후 data augmentation을 진행 하였습니다. 
+  제가 사용하고자 한 데이터는 구글에서 구축한 이미지 데이터이며(raw_images), 이 데이터를 Roboflow에서 bounding box labeling 작업 후 data augmentation을 진행 하였습니다. 
 
   ***자세한 프로젝트 내용은 문의바랍니다.***
 
