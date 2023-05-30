@@ -10,14 +10,14 @@ author: Jins
 
 포스팅할 내용은 7단원으로, 순서는 다음과 같다. 
 
-    7.1 ReNet-5
-    7.2 AlexNet
-    7.3 ZFNet
-    7.4 VGGNet
-    7.5 GoogLeNet
-    7.6 ResNet
-    7.7 콘볼루션 신경망 비교
-    7.8 다양한 모델의 등장
+- 7.1 ReNet-5
+- 7.2 AlexNet
+- 7.3 ZFNet
+- 7.4 VGGNet
+- 7.5 GoogLeNet
+- 7.6 ResNet
+- 7.7 콘볼루션 신경망 비교
+- 7.8 다양한 모델의 등장
 
 <br/>
 
@@ -27,6 +27,7 @@ author: Jins
 
 ## **연도별 모델 순서**
 - 1998 : LeNet-5
+
 ------`ILSVRC대회 시행`----- 
 
 => 1000개 클래스에 대한 이미지 분류 및 객체 인식 목적
@@ -61,6 +62,7 @@ author: Jins
     - 마지막 Conv 계층 : Convolution - MaxPooling
     - 모든 Conv 계층에는 MaxPooling 포함
 - 전체 파라미터 수 : 62,378,344
+
 ---
 문제 : FC층으로 인해 과도한 수의 파라미터 발생 => 이후 출력 계층을 제외한 신경망으로 개선
 ![32×32×1 2](https://github.com/whatareyoudoingz/whatareyoudoingz.github.io/assets/108795647/013d42f1-9247-41a0-a0b0-7f22399d77ae)
@@ -74,13 +76,14 @@ author: Jins
     - 3,4,5번째 Conv계층의 필터 개수 조정 **(384,384,256 => 512, 1024, 412)**
     - AlexNet에서 Convolution 필터를 두 그룹으로 나눈 것을 여기서는 하나로 합침.
 - 전체 파라미터 수 : 62,378,344
+
 ![32×32×1 3](https://github.com/whatareyoudoingz/whatareyoudoingz.github.io/assets/108795647/d2fc8d2d-3b81-4858-bdf9-dfdbe507a8cb)
+
 <br/>
 
 ## 2014 : **VGGNet**
 - 의의 : 3*3의 Conv 필터 사용 , 매우 단순한 구조
 - 목적 : 파라미터의 수를 줄이고, 신경망을 깊게 쌓자!
-![32×32×1 4](https://github.com/whatareyoudoingz/whatareyoudoingz.github.io/assets/108795647/9872fb6a-1e7e-4eea-a128-b86f1885cc1b)
 - 구조 
     - 11계층
     - 13계층
@@ -89,6 +92,8 @@ author: Jins
         - 중간 중간에 MaxPooling/2 적용
     - 19계층
 - 전체 파라미터 수 : 138MB
+
+![32×32×1 4](https://github.com/whatareyoudoingz/whatareyoudoingz.github.io/assets/108795647/9872fb6a-1e7e-4eea-a128-b86f1885cc1b)
 
 <br/>
 
@@ -125,7 +130,7 @@ author: Jins
 
 # **회고**
 
-전공자로써 전공 수업들을 통해서 배운 것은 많지만 완전히 흡수하지 못한 것들이 많다고 느꼈는데, 공부하면서 전공 시간에 배운 내용들이 생각나고, 이 책의 내용을 이해하는 데 많은 도움이 되는 것을 통해 자신감이 생겼고, 깊게 배우지 못한 내용들을 배우고 배웠던 내용들도 다시 보강함으로써 자신감이 생겼다. 
+전공자로써 전공 수업들을 통해서 배운 것은 많지만 완전히 흡수하지 못한 것들이 많다고 느꼈는데, 스터디를 하면서 전공 시간에 배운 내용들이 생각나고, 이 책의 내용을 이해하는 데 많은 도움이 되었고, 깊게 배우지 못한 내용들을 배우고 배웠던 내용들을 다시 보강할 수있어 좋았다. 
 
 그리고 책에 대한 부분을 말하자면, 책의 내용이 시간의 순서대로 신경망들을 나열되어 있어 좋았고, 각 신경망 설명을 자세히, 하나의 용어도 세심히 적혀있어 내용을 이해하는데 큰 도움이 되었다.
 
