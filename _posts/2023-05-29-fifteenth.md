@@ -102,6 +102,8 @@ author: Jins
 - 구조 : 22계층
 - 전체 파라미터 수 : 5M
 
+![스캔된 문서 1](https://github.com/whatareyoudoingz/whatareyoudoingz/assets/108795647/640d1775-aec5-4dcf-81ba-c861b8db775f)
+
 <br/>
 
 ## 2015 : **ResNet**
