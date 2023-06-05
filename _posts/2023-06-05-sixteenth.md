@@ -95,6 +95,7 @@ author: Jins
             -발전된 GAN 
                 - 화질 개선 : DCGAN, WGAN, PGGAN
                 - Pix2Pix(CGAN)
+                
 ---
 
 <br/>
