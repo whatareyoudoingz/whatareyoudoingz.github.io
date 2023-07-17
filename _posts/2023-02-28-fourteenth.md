@@ -1,6 +1,6 @@
 ---
-title: 2023 프로메데우스 해커톤 데이터 수집
-tags: [2023, 프로메데우스 해커톤]
+title: 2023 프로메데우스 스타트업 해커톤 데이터 수집
+tags: [2023, 프로메데우스 스타트업해커톤]
 author: Jins
 ---
 
@@ -9,6 +9,7 @@ author: Jins
   - 대회 주제 : 시장성을 고려한 인공지능 활용 서비스 개발
   - 대회 사이트 : [https://aifactory.space/competition/detail/2241](https://aifactory.space/competition/detail/2241)
   - 팀 명 : 진지도 
+  - 서비스명  : CPR(Connect Planet Recycle)
   - 팀 아이디어 : 재활용 쓰레기 분리수거 서비스 개발
   - "진지도" 해커톤 링크 : [https://aifactory.space/competition/detail/2282](https://aifactory.space/competition/detail/2282)
   - "진지도" 협업 기록 github README 
